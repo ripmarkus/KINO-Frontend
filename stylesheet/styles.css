@@ -89,7 +89,7 @@ form {
 }
 
 .input-field input:focus ~ label,
-.input-field input:valid ~ label {
+.input-field input:not(:placeholder-shown) ~ label {
     font-size: 0.8rem;
     top: 10px;
     transform: translateY(-120%);
@@ -129,6 +129,7 @@ button[type="submit"] {
     font-size: 16px;
     transition: 0.3s ease;
     margin-top: 10px;
+    font-family: Montserrat;
 }
 
 button[type="submit"]:hover {

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleBtn.addEventListener("click", () => {
         const isHidden = password.type === "password";
         password.type = isHidden ? "text" : "password";
-        toggleBtn.textContent = isHidden ? "Skjul" : "Vis";
+        toggleBtn.textContent = isHidden ? "Hide" : "Show";
         toggleBtn.setAttribute("aria-pressed", String(isHidden));
         password.focus({preventScroll: true});
     });
