@@ -4,27 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form | KinoXP</title>
+<!-- Link til font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../stylesheet/styles.css">
 </head>
-<body>
+<body class="login">
 
-<div class="wrapper">
-    <form action="#">
+<!-- Fast logo i hjørnet -->
+<header class="header">
+    <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo">
+</header>
+
+<!-- Baggrundsbillede -->
+<img src="../static/Background til KinoXP.png" alt="Biografsal" class="bg">
+
+<!-- Login-boks -->
+<main class="wrapper" role="main">
+    <form id="loginForm">
         <h2>Login</h2>
+
         <div class="input-field">
-            <input type="text" required>
-            <label>Enter your email</label>
+            <input type="email" id="email" autocomplete="username" required>
+            <label for="email">Enter your email</label>
         </div>
+
         <div class="input-field">
-            <input type="password" required>
-            <label>Enter your password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required />
+            <label for="password">Enter your password</label>
+            <button type="button" class="toggle-password" aria-controls="password" aria-pressed="false">Vis</button>
         </div>
 
         <button type="submit">Log In</button>
+
         <div class="register">
             <p>Trouble logging in? Contact the scrummaster</p>
         </div>
     </form>
-</div>
+</main>
+
+<script src="../js/login.js"></script>
+
 </body>
 </html>
