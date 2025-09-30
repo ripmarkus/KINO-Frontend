@@ -20,7 +20,7 @@ body::before {
     height: 100%;
     background: url("../static/biograf zoom.png"), #000;
     background-position: center;
-    background-size: initial;
+    background-size: cover;
 }
 .wrapper {
     width: 400px;
@@ -28,7 +28,7 @@ body::before {
     padding: 30px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
+    backdrop-filter: brightness(50%);
     -webkit-backdrop-filter: blur(8px);
 }
 form {
