@@ -1,10 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@200;300;400;500;600;700&display=swap");
 
-* {
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
     font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
 }
 
 /* Logo i hjørnet */
@@ -20,16 +26,6 @@
     border-radius: 8px;
     background-color: white;
     padding: 6px;
-}
-
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    overflow: hidden;
-    position: relative;
 }
 
 /* Baggrundsbillede */
@@ -109,10 +105,12 @@ form {
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    cursor: pointer;
+    background-color: transparent;
+    border: none;
     color: #ccc;
     font-size: 18px;
-    user-select: none;
+    cursor: pointer;
+    padding: 0;
 }
 
 .toggle-password:hover {
@@ -132,6 +130,7 @@ button[type="submit"] {
     transition: 0.3s ease;
     margin-top: 10px;
 }
+
 button[type="submit"]:hover {
     color: #fff;
     border-color: #fff;
