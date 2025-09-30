@@ -20,7 +20,7 @@ body::before {
     height: 100%;
     background: url("../static/biograf zoom.png"), #000;
     background-position: center;
-    background-size: initial;
+    background-size: cover;
 }
 .wrapper {
     width: 400px;
