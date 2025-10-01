@@ -1,0 +1,69 @@
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Logo i hjørnet */
+.header {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.logo {
+    height: 100px;
+    width: auto;
+    border-radius: 8px;
+    background-color: white;
+    padding: 6px;
+}
+
+/* Baggrundsbillede + sløret baggrund */
+.bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(8px) brightness(60%);
+    z-index: -1;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+/* Panel styling */
+.panel {
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 12px;
+    padding: 12px;
+    backdrop-filter: blur(6px) brightness(62%);
+    -webkit-backdrop-filter: blur(6px) brightness(62%);
+}
+
+/* Margin mellem paneler */
+.panel-header {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 10px;
+}
+
+/* Panel header */
+.panel-header h2 {
+    margin:0; font-size:1.2rem;
+}
+
+/* Actions i panel header */
+.panel-actions {
+    display:flex; gap:10px; flex-wrap: wrap;
+}
