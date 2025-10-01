@@ -1,0 +1,109 @@
+* {
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    margin: 0;
+    color: #fff;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Logo og header */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    position: relative;
+    z-index: 2;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+    background: white;
+    border-radius: 6px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+/* Sløret baggrund */
+.bg {
+    position: fixed;
+    inset: 0;
+    background: url("../static/Background til KinoXP.png") center/cover no-repeat;
+    filter: blur(8px) brightness(60%);
+    z-index: -1;
+}
+
+/* Dashboard layout */
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sektioner */
+section {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+/* Tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #fff;
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Knappen */
+.action-btn {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #ddd;
+}
+
+/* Salvælger */
+.hall-schedule select {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%; /* vigtigt for fixed layout */
+}

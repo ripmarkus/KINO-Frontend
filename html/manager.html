@@ -1,10 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KinoXP | Manager Dashboard</title>
+    <link rel="stylesheet" href="../stylesheet/managerStyleSheet.css">
 </head>
 <body>
 
+<!-- Logo som tilbage-knap -->
+<header class="header">
+    <a href="employee-dashboard.html">
+        <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo">
+    </a>
+    <h1>Manager Dashboard</h1>
+</header>
+
+<!-- Sløret baggrund -->
+<div class="bg"></div>
+
+<main class="dashboard">
+
+    <!-- Salvælger + tidsplan -->
+    <section class="hall-schedule">
+        <h2>Vælg en sal og se tidsplan</h2>
+        <select id="hallSelect">
+            <option value="sal1">Sal 1</option>
+            <option value="sal2">Sal 2</option>
+        </select>
+
+        <table id="scheduleTable">
+            <thead>
+            <tr>
+                <th>Start</th>
+                <th>Slut</th>
+                <th>Film</th>
+                <th>Handling</th>
+                <th>Billetsalg</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Dynamisk udfyldes via JS -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Tilgængelige film -->
+    <section class="film-list">
+        <h2>Tilgængelige film</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Titel</th>
+                <th>Aldersgrænse</th>
+                <th>Varighed</th>
+                <th>Genre</th>
+                <th>Beskrivelse</th>
+                <th>Handling</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Avatar</td>
+                <td>11+</td>
+                <td>162 min</td>
+                <td>Sci-Fi</td>
+                <td>En episk rejse til Pandora.</td>
+                <td><button class="action-btn">Tilføj til sal</button></td>
+            </tr>
+            <tr>
+                <td>The Dark Knight</td>
+                <td>15+</td>
+                <td>152 min</td>
+                <td>Action</td>
+                <td>Batman står over for Jokeren.</td>
+                <td><button class="action-btn">Tilføj til sal</button></td>
+            </tr>
+            <tr>
+                <td>Inception</td>
+                <td>15+</td>
+                <td>162 min</td>
+                <td>Action</td>
+                <td>Tyv stjæler drømme.</td>
+                <td><button class="action-btn">Tilføj til sal</button></td>
+            </tr>
+            <tr>
+                <td>Titanic</td>
+                <td>7+</td>
+                <td>210 min</td>
+                <td>Romance</td>
+                <td>Tegn mig nøgen Jack</td>
+                <td><button class="action-btn">Tilføj til sal</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+</main>
+
+<script src="../js/manager.js"></script>
 </body>
 </html>
