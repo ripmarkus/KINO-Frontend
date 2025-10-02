@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<!-- Logo som tilbage-knap -->
+<!-- Logo as back button -->
 <header class="header">
     <a href="employee-dashboard.html">
         <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo">
@@ -16,47 +16,50 @@
     <h1>Manager Dashboard</h1>
 </header>
 
-<!-- Sløret baggrund -->
+<!-- Blurred background -->
 <div class="bg"></div>
 
 <main class="dashboard">
 
-    <!-- Salvælger + tidsplan -->
+    <!-- Hall selector + schedule -->
     <section class="hall-schedule">
-        <h2>Vælg en sal og se tidsplan</h2>
-        <select id="hallSelect">
-            <option value="sal1">Sal 1</option>
-            <option value="sal2">Sal 2</option>
-        </select>
+        <h2>Select a theater and view schedule</h2>
+        <div class="hall-buttons">
+            <button class="hall-btn active" data-hall="hall1">Theater 1</button>
+            <button class="hall-btn" data-hall="hall2">Theater 2</button>
+        </div>
 
         <table id="scheduleTable">
             <thead>
             <tr>
                 <th>Start</th>
-                <th>Slut</th>
-                <th>Film</th>
-                <th>Handling</th>
-                <th>Billetsalg</th>
+                <th>End</th>
+                <th>Movie</th>
+                <th>Action</th>
+                <th>Ticket Sales</th>
             </tr>
             </thead>
             <tbody>
-            <!-- Dynamisk udfyldes via JS -->
+            <!-- Dynamically filled via JS -->
             </tbody>
         </table>
     </section>
 
-    <!-- Tilgængelige film -->
-    <section class="film-list">
-        <h2>Tilgængelige film</h2>
+    <!-- Available movies -->
+    <section>
+        <div class="film-list-header">
+        <h2>Available Movies </h2>
+        <button class="action-btn">Add a movie</button>
+        </div>
         <table>
             <thead>
             <tr>
-                <th>Titel</th>
-                <th>Aldersgrænse</th>
-                <th>Varighed</th>
+                <th>Title</th>
+                <th>Age Limit</th>
+                <th>Duration</th>
                 <th>Genre</th>
-                <th>Beskrivelse</th>
-                <th>Handling</th>
+                <th>Description</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -65,32 +68,36 @@
                 <td>11+</td>
                 <td>162 min</td>
                 <td>Sci-Fi</td>
-                <td>En episk rejse til Pandora.</td>
-                <td><button class="action-btn">Tilføj til sal</button></td>
+                <td>An epic journey to Pandora.</td>
+                <td><button class="action-btn">Add to theater</button>
+                <button class="cancel-btn">Delete from list</button></td>
             </tr>
             <tr>
                 <td>The Dark Knight</td>
                 <td>15+</td>
                 <td>152 min</td>
                 <td>Action</td>
-                <td>Batman står over for Jokeren.</td>
-                <td><button class="action-btn">Tilføj til sal</button></td>
+                <td>Batman faces the Joker.</td>
+                <td><button class="action-btn">Add to theater</button>
+                    <button class="cancel-btn">Delete from list</button></td>
             </tr>
             <tr>
                 <td>Inception</td>
                 <td>15+</td>
                 <td>162 min</td>
                 <td>Action</td>
-                <td>Tyv stjæler drømme.</td>
-                <td><button class="action-btn">Tilføj til sal</button></td>
+                <td>A thief steals dreams.</td>
+                <td><button class="action-btn">Add to theater</button>
+                    <button class="cancel-btn">Delete from list</button></td>
             </tr>
             <tr>
                 <td>Titanic</td>
                 <td>7+</td>
                 <td>210 min</td>
                 <td>Romance</td>
-                <td>Tegn mig nøgen Jack</td>
-                <td><button class="action-btn">Tilføj til sal</button></td>
+                <td>Jack and Rose’s epic love story.</td>
+                <td><button class="action-btn">Add to theater</button>
+                    <button class="cancel-btn">Delete from list</button></td>
             </tr>
             </tbody>
         </table>

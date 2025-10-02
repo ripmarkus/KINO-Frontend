@@ -15,9 +15,12 @@ body {
     display: flex;
     align-items: center;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.6);
-    position: relative;
-    z-index: 2;
+    background: rgba(0, 0, 0, 256);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
 }
 
 .logo {
@@ -43,14 +46,15 @@ body {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    padding: 30px;
-    position: relative;
+    position: page;
     z-index: 1;
+    padding: 20px;
+    padding-top: 150px;
 }
 
 /* Sektioner */
 section {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
 }
@@ -78,21 +82,86 @@ th {
 }
 
 /* Knappen */
+/* Action-knap */
 .action-btn {
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 6px 12px;
-    margin: 0 3px;
-    border-radius: 6px;
+    --ring: 0 0 0 0 rgba(177,33,42,0);
+    appearance: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px;
+    padding: 12px 18px;
+    font: 600 1rem/1 "Montserrat", sans-serif;
+    color: #fff;
+    background: linear-gradient(180deg, #B1212A, #9E1C23); /* primær farve */
+    box-shadow: var(--ring);
     cursor: pointer;
-    font-weight: 600;
-    transition: background 0.2s ease;
+    transition: transform .12s ease, box-shadow .18s ease, border-color .15s ease, background .2s ease;
 }
 
 .action-btn:hover {
-    background: #ddd;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(177,33,42,.45), 0 0 0 2px rgba(255,255,255,.08) inset;
 }
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(234,217,201,.9), 0 8px 18px rgba(0,0,0,.35);
+}
+
+/* Cancel-knap / Outline */
+.cancel-btn {
+    --ring: 0 0 0 0 rgba(177,33,42,0);
+    appearance: none;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px;
+    padding: 12px 18px;
+    font: 600 1rem/1 "Montserrat", sans-serif;
+    color: #fff;
+    background: rgba(0,0,0,.25); /* outline/secondary */
+    box-shadow: var(--ring);
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .18s ease, border-color .15s ease, background .2s ease;
+}
+
+.cancel-btn:hover {
+    border-color: rgba(255,255,255,.55);
+    box-shadow: 0 8px 18px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.06) inset;
+}
+
+.cancel-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(234,217,201,.9), 0 8px 18px rgba(0,0,0,.35);
+}
+
+.hall-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.hall-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hall-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.hall-btn.active {
+    border: 2px solid #B1212A;
+    background: rgba(255,255,255,0.05);
+}
+
 
 /* Salvælger */
 .hall-schedule select {
@@ -106,4 +175,14 @@ th {
 table {
     table-layout: fixed;
     width: 100%; /* vigtigt for fixed layout */
+}
+
+.film-list-header {
+    display: flex;          /* gør containeren til flex */
+    align-items: center;    /* vertikal centering */
+    margin-bottom: 15px;    /* afstand til tabellen */
+}
+
+.film-list-header .action-btn {
+    margin-left: auto;      /* skubber knappen helt til højre */
 }
