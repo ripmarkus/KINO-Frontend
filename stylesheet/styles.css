@@ -129,7 +129,7 @@ button[type="submit"] {
     font-size: 16px;
     transition: 0.3s ease;
     margin-top: 10px;
-    font-family: Montserrat;
+    font-family: Montserrat, sans-serif;
 }
 
 button[type="submit"]:hover {
