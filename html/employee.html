@@ -1,57 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Employee | KinoXP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../stylesheet/employeeStyleSheet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../stylesheet/employeeStyleSheet.css" />
 </head>
 <body class="employee-body">
 
-<header class="header">
-    <a href="employee-dashboard.html">
-        <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo">
-    </a>
+<!-- Baggrund (ét lag) -->
+<img src="../static/Background til KinoXP.png" alt="Biografsal" class="bg" />
+
+<!-- Fast topbar -->
+<header class="topbar">
+    <div class="topbar-left">
+        <a href="employee-dashboard.html" class="logo-wrap" aria-label="KinoXP forside">
+            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
+        </a>
+        <h1>Employee Dashboard</h1>
+<!--        <div class="topbar-middle">-->
+<!--            <span class="employee-name">Hej, Kristian! 👋</span>-->
+<!--        </div>-->
+    </div>
+    <div class="topbar-right">
+        <button class="btn-ghost" id="logoutBtn" aria-label="Log ud">Log ud</button>
+    </div>
 </header>
 
-<div class="bg"></div>
+<!-- Main indhold (centreret i området under topbar) -->
+<main class="employee-dashboard" role="main">
 
-<!-- Baggrundsbillede -->
-<img src="../static/Background til KinoXP.png" alt="Biografsal" class="bg">
-
-<!-- Employee Dashboard -->
-<main class="employee-dashboard">
-    <h1>Employee Dashboard</h1>
-    <section class="panel">
+    <section class="panel" aria-labelledby="ticket-h2">
         <header class="panel-header">
-            <h2>Ticket Management</h2>
+            <h2 id="ticket-h2">Ticket Management</h2>
         </header>
         <div class="panel-actions">
-            <button class="btn">Sell Tickets</button>
-            <button class="btn">Check Seat Availability</button>
+            <button class="btn btn-primary" aria-label="Sell tickets">Sell Tickets</button>
+            <button class="btn btn-outline" aria-label="Check seat availability">Check Seat Availability</button>
         </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" aria-labelledby="show-h2">
         <header class="panel-header">
-            <h2>Show Management</h2>
+            <h2 id="show-h2">Show Management</h2>
         </header>
         <div class="panel-actions">
-            <button class="btn">View Show Schedule</button>
-            <button class="btn">Update Show Status</button>
+            <button class="btn btn-primary" aria-label="View show schedule">View Show Schedule</button>
+            <button class="btn btn-outline" aria-label="Update show status">Update Show Status</button>
         </div>
     </section>
 
-    <section class="panel">
+    <section class="panel" aria-labelledby="snack-h2">
         <header class="panel-header">
-            <h2>Snack Bar Management</h2>
+            <h2 id="snack-h2">Snack Bar Management</h2>
         </header>
         <div class="panel-actions">
-            <button class="btn">Manage Snack Inventory</button>
-            <button class="btn">Manage Snack Orders</button>
+            <button class="btn btn-primary" aria-label="Manage snack inventory">Manage Snack Inventory</button>
+            <button class="btn btn-outline" aria-label="Manage snack orders">Manage Snack Orders</button>
         </div>
     </section>
 </main>
+
 </body>
 </html>
