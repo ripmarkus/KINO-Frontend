@@ -1,108 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>KinoXP | Manager Dashboard</title>
-    <link rel="stylesheet" href="../stylesheet/managerStyleSheet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+    <link rel="stylesheet" href="../stylesheet/managerStyleSheet.css" />
 </head>
 <body>
 
-<!-- Logo as back button -->
-<header class="header">
-    <a href="employee-dashboard.html">
-        <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo">
-    </a>
-    <h1>Manager Dashboard</h1>
+<div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <a href="employee-dashboard.html" class="logo-wrap" aria-label="KinoXP forside">
+            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
+        </a>
+        <h1 class="topbar-title">Manager Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+        <a href="index.html">
+        <button class="btn-ghost" id="logoutBtn">Logout</button></a>
+    </div>
 </header>
 
-<!-- Blurred background -->
-<div class="bg"></div>
+<main class="app-main manager-main" role="main">
 
-<main class="dashboard">
+    <section class="panel" aria-labelledby="hall-h2">
+        <header class="panel-header">
+            <h2 id="hall-h2">Select a theater and view schedule</h2>
+            <div class="panel-actions">
+                <button class="btn btn-toggle" data-hall="hall1" aria-pressed="true">Theater 1</button>
+                <button class="btn btn-toggle" data-hall="hall2" aria-pressed="false">Theater 2</button>
+            </div>
+        </header>
 
-    <!-- Hall selector + schedule -->
-    <section class="hall-schedule">
-        <h2>Select a theater and view schedule</h2>
-        <div class="hall-buttons">
-            <button class="hall-btn active" data-hall="hall1">Theater 1</button>
-            <button class="hall-btn" data-hall="hall2">Theater 2</button>
+        <div class="table-wrap">
+            <table id="scheduleTable" class="table table--grid">
+                <thead>
+                <tr>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Movie</th>
+                    <th class="col-actions">Action</th>
+                    <th>Ticket Sales</th>
+                </tr>
+                </thead>
+                <tbody><!-- JS --></tbody>
+            </table>
         </div>
-
-        <table id="scheduleTable">
-            <thead>
-            <tr>
-                <th>Start</th>
-                <th>End</th>
-                <th>Movie</th>
-                <th>Action</th>
-                <th>Ticket Sales</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Dynamically filled via JS -->
-            </tbody>
-        </table>
     </section>
 
-    <!-- Available movies -->
-    <section>
-        <div class="film-list-header">
-        <h2>Available Movies </h2>
-        <button class="action-btn">Add a movie</button>
-        </div>
-        <table>
-            <thead>
-            <tr>
-                <th>Title</th>
-                <th>Age Limit</th>
-                <th>Duration</th>
-                <th>Genre</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Avatar</td>
-                <td>11+</td>
-                <td>162 min</td>
-                <td>Sci-Fi</td>
-                <td>An epic journey to Pandora.</td>
-                <td><button class="action-btn">Add to theater</button>
-                <button class="cancel-btn">Delete from list</button></td>
-            </tr>
-            <tr>
-                <td>The Dark Knight</td>
-                <td>15+</td>
-                <td>152 min</td>
-                <td>Action</td>
-                <td>Batman faces the Joker.</td>
-                <td><button class="action-btn">Add to theater</button>
-                    <button class="cancel-btn">Delete from list</button></td>
-            </tr>
-            <tr>
-                <td>Inception</td>
-                <td>15+</td>
-                <td>162 min</td>
-                <td>Action</td>
-                <td>A thief steals dreams.</td>
-                <td><button class="action-btn">Add to theater</button>
-                    <button class="cancel-btn">Delete from list</button></td>
-            </tr>
-            <tr>
-                <td>Titanic</td>
-                <td>7+</td>
-                <td>210 min</td>
-                <td>Romance</td>
-                <td>Jack and Rose’s epic love story.</td>
-                <td><button class="action-btn">Add to theater</button>
-                    <button class="cancel-btn">Delete from list</button></td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+    <section class="panel" aria-labelledby="movie-h2">
+        <header class="panel-header">
+            <h2 id="movie-h2">Available Movies</h2>
+            <div class="panel-actions">
+                <button class="btn btn-primary">Add a movie</button>
+            </div>
+        </header>
 
+        <div class="table-wrap">
+            <table class="table table--grid">
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Age Limit</th>
+                    <th>Duration</th>
+                    <th>Genre</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-actions">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Avatar</td><td>11+</td><td>162 min</td><td>Sci-Fi</td><td>An epic journey to Pandora.</td>
+                    <td class="col-actions">
+                        <button class="btn btn-primary">Add to theater</button>
+                        <button class="btn btn-outline">Delete from list</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>The Dark Knight</td><td>15+</td><td>152 min</td><td>Action</td><td>Batman faces the Joker.</td>
+                    <td class="col-actions">
+                        <button class="btn btn-primary">Add to theater</button>
+                        <button class="btn btn-outline">Delete from list</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Inception</td><td>15+</td><td>162 min</td><td>Action</td><td>A thief steals dreams.</td>
+                    <td class="col-actions">
+                        <button class="btn btn-primary">Add to theater</button>
+                        <button class="btn btn-outline">Delete from list</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Titanic</td><td>7+</td><td>210 min</td><td>Romance</td><td>Jack and Rose’s epic love story.</td>
+                    <td class="col-actions">
+                        <button class="btn btn-primary">Add to theater</button>
+                        <button class="btn btn-outline">Delete from list</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </main>
 
 <script src="../js/manager.js"></script>

@@ -1,0 +1,305 @@
+/* ========= Theme tokens ========= */
+:root {
+    --topbar-h: 100px;         /* nem at justere */
+    --bg-dim: 60%;
+    --glass-dim: 30%;
+    --blur: 8px;
+    --radius: 14px;
+    --container-max: 1100px; /* default til smalle sider */
+
+    --red: #B1212A;
+    --red-600: #9E1C23;
+    --beige: #ebddbe;
+    --text: #fff;
+    --muted: rgba(255,255,255,.85);
+    --border: rgba(255,255,255,.35);
+    --shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+
+*{ box-sizing:border-box }
+html,body{ height:100% }
+
+body{
+    margin:0;
+    font-family:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    color:var(--text);
+    min-height:100vh;
+}
+
+/* ========= Background (div med background-image) ========= */
+.bg{
+    position:fixed; inset:0;
+    background-position:center;
+    background-size:cover;
+    background-repeat:no-repeat;
+    filter: blur(var(--blur)) brightness(var(--bg-dim));
+    z-index:-1;
+}
+
+/* ========= Topbar ========= */
+.topbar {
+    position:fixed; top:0; left:0; right:0;
+    height:var(--topbar-h);
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 0 20px;
+    backdrop-filter: blur(8px) brightness(var(--glass-dim));
+    -webkit-backdrop-filter: blur(8px) brightness(var(--glass-dim));
+    border-bottom:1px solid var(--border);
+    box-shadow: var(--shadow);
+    z-index:10;
+}
+.topbar-left { display:flex; align-items:center; gap:14px }
+.logo-wrap { display:inline-flex; align-items:center }
+.logo{
+    height:72px; width:auto;
+    border-radius:8px;
+    background:#fff;
+    padding:6px;
+}
+.topbar-middle{
+    font-size:1.1rem; font-weight:600; color:var(--muted);
+}
+.btn-ghost{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:10px 14px;
+    font-size:15px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:600;
+    transition: transform .12s ease, background .15s ease, border-color .15s ease;
+}
+.btn-ghost:hover{ background:rgba(255,255,255,.08) }
+.btn-ghost:active{ transform:translateY(1px) }
+.btn-ghost:focus-visible{ outline:3px solid var(--beige); outline-offset:2px }
+
+/* ========= Main layout (stabil centering under topbar) ========= */
+.app-main{
+    width:min(1100px,92%);
+    min-height: calc(100vh - var(--topbar-h));
+    margin: 0 auto;
+    padding: 24px 0 40px;
+    display:grid;
+    align-content:center;   /* vertikal centrering i rest-areal */
+    gap:18px;
+    text-align:left;
+}
+.app-main > h1{
+    text-align:center;
+    margin:0 0 2px 0;
+    font-size:clamp(1.4rem, 2vw, 1.8rem);
+    font-weight:700;
+    color:var(--text);
+    letter-spacing:.3px;
+}
+
+/* ========= Panels ========= */
+.panel{
+    position:relative;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px;
+    backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    -webkit-backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    box-shadow: var(--shadow);
+}
+.panel::after{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:var(--radius);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    pointer-events:none;
+}
+.panel-header{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:12px;
+}
+.panel-header h2{
+    margin:0;
+    font-size:clamp(1.1rem, 1.8vw, 1.3rem);
+    font-weight:700;
+    letter-spacing:.2px;
+}
+.panel-actions{ display:flex; gap:12px; flex-wrap:wrap }
+
+/* ========= Buttons ========= */
+.btn{
+    --ring: 0 0 0 0 rgba(177,33,42,0);
+    appearance:none;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:12px 18px;
+    font: 600 1rem/1.2 "Montserrat", sans-serif;
+    color:var(--text);
+    background: rgba(255,255,255,.04);
+    box-shadow: var(--ring);
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .18s ease, border-color .15s ease, background .2s ease;
+}
+.btn-primary{
+    background: linear-gradient(180deg, var(--red), var(--red-600));
+    border-color: rgba(0,0,0,.25);
+}
+.btn-primary:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(177,33,42,.45), 0 0 0 2px rgba(255,255,255,.08) inset;
+}
+.btn-primary:active{ transform: translateY(0) }
+.btn-outline{ background: rgba(0,0,0,.25) }
+.btn-outline:hover{
+    border-color: rgba(255,255,255,.55);
+    box-shadow: 0 8px 18px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.06) inset;
+}
+.btn:focus-visible{
+    outline:none;
+    box-shadow: 0 0 0 3px rgba(234,217,201,.9), 0 8px 18px rgba(0,0,0,.35);
+}
+
+/* ========= Toggle-knap (genbrug til fx hall-vælger) ========= */
+.btn-toggle{ background: rgba(0,0,0,.25) }
+.btn-toggle[aria-pressed="true"]{
+    border-color: var(--red);
+    box-shadow: 0 0 0 2px rgba(255,255,255,.06) inset, 0 8px 18px rgba(0,0,0,.35);
+    background: rgba(255,255,255,.06);
+}
+.btn-toggle:focus-visible{
+    outline:3px solid var(--beige);
+    outline-offset:2px;
+}
+
+/* ========= Tabel (fælles) ========= */
+.table-wrap{ overflow-x:auto }
+.table{
+    width:100%;
+    border-collapse: separate;
+    border-spacing:0;
+    table-layout: fixed;
+    overflow:hidden;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    -webkit-backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    box-shadow: var(--shadow);
+}
+.table thead th{
+    text-align:left;
+    padding:12px 14px;
+    font-weight:700;
+    background: rgba(255,255,255,.12);
+    border-bottom:1px solid var(--border);
+}
+.table tbody td{
+    padding:12px 14px;
+    vertical-align:top;
+    border-bottom:1px solid rgba(255,255,255,.18);
+}
+.table tbody tr:last-child td{
+    border-bottom:0
+}
+
+/* ========= Responsive småjusteringer ========= */
+@media (max-width: 768px){
+    :root{ --topbar-h: 84px }
+    .logo{ height:56px }
+    .topbar-middle{ display:none }
+}
+
+/* brug variablen for ALLE hoved-containere */
+.app-main,
+.employee-dashboard,
+.manager-dashboard{
+    width: min(var(--container-max), 96%);
+}
+
+/* Manager: gør siden bredere */
+.manager-main,
+.manager-dashboard{
+    --container-max: 1600px;      /* skru evt. op til 1800px */
+}
+
+/* Utility hvis du vil have fuld-bredde på en side */
+.app-main--full { --container-max: 1800px; }
+
+/* ==== Tabel utilities for læsbarhed ==== */
+.table--auto { table-layout: auto; } /* lad kolonner få naturlig bredde */
+.table--wrap th, .table--wrap td { white-space: normal; word-break: break-word; hyphens: auto; }
+.table--sticky thead th { position: sticky; top: calc(var(--topbar-h) + 8px); z-index: 1; }
+
+/* ---- h1 inside topbar ---- */
+.topbar-title{
+    margin: 0;
+    font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: var(--beige);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* optional: a nice alignment */
+.topbar-left{ gap: 12px }
+
+/* ---- greeting placed elsewhere (e.g., in first panel header) ---- */
+.greeting{
+    margin-left: auto;            /* pushes to the right in .panel-header */
+    font-weight: 600;
+    color: var(--muted);
+}
+
+/* === "Original" tabel-look: fulde grid-linjer === */
+.panel .table-wrap{
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    /* let glass bag tabellen – matcher dine paneler */
+    backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    -webkit-backdrop-filter: blur(6px) brightness(var(--glass-dim));
+    box-shadow: var(--shadow);
+}
+
+/* Gitterlinjer på alle celler + afrundede ydre hjørner via wrapper */
+.table--grid{
+    width: 100%;
+    table-layout: auto;          /* så Description kan fylde */
+    border-collapse: collapse;   /* fulde linjer mellem celler */
+    background: transparent;
+}
+
+.table--grid thead th{
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 700;
+    background: rgba(255,255,255,.20);   /* som dit “original” headerfelt */
+    border: 1px solid rgba(255,255,255,.60);
+}
+
+.table--grid tbody td{
+    padding: 12px 14px;
+    vertical-align: top;
+    border: 1px solid rgba(255,255,255,.55); /* tydelige grid-linjer */
+    white-space: normal;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Hover for lidt feedback (valgfrit) */
+.table--grid tbody tr:hover td{
+    background: rgba(255,255,255,.05);
+}
+
+/* Kolonnehjælpere */
+.table .col-actions{ width: 240px; white-space: nowrap; }
+.table .col-description{ width: 40%; }
+.table .col-description{ width: 40%; }
+
+#scheduleTable {
+    table-layout: fixed;   /* Ensartet bredde på alle kolonner */
+    width: 100%;           /* Brug hele bredden */
+}
+
+#scheduleTable th,
+#scheduleTable td {
+    width: 20%;            /* 5 kolonner → 100/5 = 20% hver */
+}
