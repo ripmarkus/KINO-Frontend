@@ -1,0 +1,19 @@
+/* Fast bredde til actionkolonner */
+.table th.col-actions,
+.table td.col-actions {
+    width: 220px;
+    white-space: nowrap;
+}
+
+/* Ekstra luft under hall-toggles */
+.panel .panel-actions {
+    row-gap: 8px;
+}
+
+.table .col-actions {
+    width: 240px; white-space: nowrap;
+}
+
+.table .col-description {
+    width: 40%;
+}

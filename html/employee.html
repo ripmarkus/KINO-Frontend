@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KinoXP | Employee Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+    <link rel="stylesheet" href="../stylesheet/employeeStyleSheet.css" />
 </head>
 <body>
+
+<div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <a href="employee-dashboard.html" class="logo-wrap" aria-label="KinoXP forside">
+            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
+        </a>
+        <h1 class="topbar-title">Employee Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+        <button class="btn-ghost" id="logoutBtn" aria-label="Log ud">Logout</button>
+    </div>
+</header>
+
+<main class="app-main employee-main" role="main">
+    <section class="panel" aria-labelledby="ticket-h2">
+        <header class="panel-header">
+            <h2 id="ticket-h2">Ticket Management</h2>
+        </header>
+        <div class="panel-actions">
+            <button class="btn btn-primary">Sell Tickets</button>
+            <button class="btn btn-outline">Check Seat Availability</button>
+        </div>
+    </section>
+
+    <section class="panel" aria-labelledby="show-h2">
+        <header class="panel-header">
+            <h2 id="show-h2">Show Management</h2>
+        </header>
+        <div class="panel-actions">
+            <button class="btn btn-primary">View Show Schedule</button>
+            <button class="btn btn-outline">Update Show Status</button>
+        </div>
+    </section>
+
+    <section class="panel" aria-labelledby="snack-h2">
+        <header class="panel-header">
+            <h2 id="snack-h2">Snack Bar Management</h2>
+        </header>
+        <div class="panel-actions">
+            <button class="btn btn-primary">Manage Snack Inventory</button>
+            <button class="btn btn-outline">Manage Snack Orders</button>
+        </div>
+    </section>
+</main>
 
 </body>
 </html>

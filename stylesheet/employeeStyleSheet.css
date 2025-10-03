@@ -1,0 +1,4 @@
+/* Employee-specifikke småting (valgfrit) */
+
+/* Eksempel: ekstra luft over første panel */
+.employee-main .panel:first-of-type { margin-top: 4px; }
