@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/KINO-Frontend.iml" filepath="$PROJECT_DIR$/.idea/KINO-Frontend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/KINO-Frontend.iml" filepath="$PROJECT_DIR$/KINO-Frontend.iml" />
     </modules>
   </component>
 </project>

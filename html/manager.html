@@ -28,10 +28,11 @@
 
     <section class="panel" aria-labelledby="hall-h2">
         <header class="panel-header">
-            <h2 id="hall-h2">Select a theater and view schedule</h2>
+            <h2 id="hall-h2">Select a theater and view upcoming screenings</h2>
             <div class="panel-actions">
                 <button class="btn btn-toggle" data-hall="hall1" aria-pressed="true">Theater 1</button>
                 <button class="btn btn-toggle" data-hall="hall2" aria-pressed="false">Theater 2</button>
+                <button class="btn btn-primary" id="addScreeningBtn">Add Screening</button>
             </div>
         </header>
 
@@ -39,18 +40,18 @@
             <table id="scheduleTable" class="table table--grid">
                 <thead>
                 <tr>
-                    <th>Start</th>
-                    <th>End</th>
+                    <th>Date</th>
+                    <th>Time</th>
                     <th>Movie</th>
                     <th class="col-actions">Action</th>
-                    <th>Ticket Sales</th>
+                    <th>Tickets Sold</th>
                 </tr>
                 </thead>
                 <tbody><!-- JS --></tbody>
             </table>
         </div>
     </section>
-
+<!--
     <section class="panel" aria-labelledby="movie-h2">
         <header class="panel-header">
             <h2 id="movie-h2">Available Movies</h2>
@@ -104,6 +105,7 @@
             </table>
         </div>
     </section>
+    -->
 </main>
 
 <script src="../js/manager.js"></script>
