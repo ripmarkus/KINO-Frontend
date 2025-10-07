@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KinoxP — Book billet</title>
+
+    <!-- eksisterende globale stylesheet -->
+
+
+    <style>
+        /* Lette overrides / komponentstyles, holder sig til jeres design */
+        .layout {
+            display:grid;
+            grid-template-columns: 1fr 380px;
+            gap:18px;
+            align-items:start;
+        }
+        @media (max-width:980px){ .layout{ grid-template-columns: 1fr; } }
+
+        .film-grid{ display:flex; gap:12px; flex-wrap:wrap }
+        .film-card{
+            width:150px; border-radius:12px; overflow:hidden; cursor:pointer;
+            border:1px solid rgba(255,255,255,.06);
+            background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.38));
+            transition: transform .12s, box-shadow .12s;
+        }
+        .film-card:hover{ transform:translateY(-6px); box-shadow:0 14px 30px rgba(0,0,0,.45) }
+        .film-poster{ width:100%; height:220px; object-fit:cover; display:block }
+        .film-title{ padding:10px; font-weight:700; color:var(--muted); font-size:0.95rem; text-align:center }
+
+        .showtimes { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
+        .time-btn{ min-width:110px; padding:8px 10px; border-radius:10px; font-weight:700 }
+
+        .seatmap { display:grid; gap:8px; justify-content:center; padding:12px 6px }
+        .seat { width:38px;height:38px;border-radius:6px; display:grid; place-items:center; cursor:pointer; border:1px solid rgba(255,255,255,.08); font-weight:700 }
+        .seat.free{ background: rgba(255,255,255,.03); color:var(--muted) }
+        .seat.occupied{ background: rgba(255,255,255,.06); color:rgba(255,255,255,.5); cursor:not-allowed; text-decoration:line-through }
+        .seat.selected{ background: linear-gradient(180deg,var(--red),var(--red-600)); color:var(--beige); box-shadow:0 10px 20px rgba(177,33,42,.30) }
+
+        .legend{ display:flex; gap:10px; margin-top:10px; color:var(--muted) }
+        .legend .sw{ width:16px;height:16px;border-radius:4px;border:1px solid rgba(255,255,255,.08) }
+
+        .summary { display:flex; flex-direction:column; gap:10px }
+        .chip{ padding:8px 10px; border-radius:10px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); font-weight:700 }
+
+        .muted-small{ color:var(--muted); font-size:0.9rem }
+        .loader{ width:16px;height:16px;border-radius:50%; border:3px solid rgba(255,255,255,.08); border-top-color:var(--red); animation:spin .8s linear infinite; display:inline-block }
+        @keyframes spin{ to{ transform:rotate(360deg) } }
+    </style>
+    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css">
+</head>
+<body>
+<div class="bg" id="bg"></div>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="logo-wrap"><img class="logo" src="logo-placeholder.png" alt="KinoxP"></div>
+        <div class="topbar-middle">Book din plads</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-ghost" id="help">Hjælp</button>
+        <button class="btn-outline btn" id="restart">Start forfra</button>
+    </div>
+</header>
+
+<main class="app-main">
+    <h1>Book billet — overskueligt flow</h1>
+
+    <div class="layout">
+        <!-- LEFT: film + showtimes + seatmap -->
+        <div>
+            <div class="panel">
+                <div class="panel-header"><h2>1) Film</h2><div class="panel-actions"><span id="filmsLoader"></span></div></div>
+                <div id="filmContainer" class="film-grid"></div>
+            </div>
+
+            <div class="panel" style="margin-top:12px;" id="panelShowtimes" hidden>
+                <div class="panel-header"><h2>2) Tidspunkter</h2><div class="panel-actions"><span id="timesLoader"></span></div></div>
+                <div id="showtimeInfo" class="muted-small">Vælg en film for at se tidspunkter</div>
+                <div id="timesWrap" class="showtimes"></div>
+            </div>
+
+            <div class="panel" style="margin-top:12px;" id="panelSeats" hidden>
+                <div class="panel-header"><h2>3) Sæder</h2><div class="panel-actions"><span id="seatsLoader"></span></div></div>
+                <div id="screenNote" class="muted-small">Lærred</div>
+                <div id="seatMap" class="seatmap" aria-live="polite"></div>
+                <div class="legend">
+                    <div class="muted-small"><span class="sw" style="background:linear-gradient(180deg,var(--red),var(--red-600));"></span> Valgt</div>
+                    <div class="muted-small"><span class="sw" style="background:rgba(255,255,255,.03)"></span> Ledigt</div>
+                    <div class="muted-small"><span class="sw" style="background:rgba(255,255,255,.06)"></span> Optaget</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: booking summary + form -->
+        <aside>
+            <div class="panel summary">
+                <div class="panel-header"><h2>Din booking</h2><div class="greeting" id="summaryCount">0 valgt</div></div>
+
+                <div><div class="muted-small">Film</div><div id="selFilm" style="font-weight:800">—</div></div>
+                <div style="margin-top:6px"><div class="muted-small">Tidspunkt</div><div id="selTime" style="font-weight:800">—</div></div>
+                <div style="margin-top:6px"><div class="muted-small">Sæder</div><div id="selSeats" class="selected-list">—</div></div>
+                <div style="margin-top:10px"><div class="muted-small">Pris</div><div id="priceInfo" style="font-weight:800">—</div></div>
+
+                <hr style="opacity:.08" />
+
+                <form id="bookingForm">
+                    <label for="name">Navn</label>
+                    <input id="name" name="name" type="text" required placeholder="Fuldt navn">
+
+                    <label for="email" style="margin-top:8px">E-mail</label>
+                    <input id="email" name="email" type="email" required placeholder="navn@eksempel.dk">
+
+                    <label for="phone" style="margin-top:8px">Telefon</label>
+                    <input id="phone" name="phone" type="tel" required placeholder="+45 12 34 56 78">
+
+                    <div style="display:flex;gap:8px; margin-top:12px; align-items:center">
+                        <button class="btn btn-primary" id="confirmBtn" type="submit" disabled>Bekræft booking</button>
+                        <div id="formStatus" class="muted-small" aria-live="polite"></div>
+                    </div>
+                </form>
+
+                <div class="muted-small" style="margin-top:8px">
+                    Bemærk: formularen sender en POST til <code>/api/reservations</code>. Hvis field-navne i backend er forskellige, ret buildReservationPayload() i scriptet.
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<template id="filmTpl">
+    <div class="film-card" role="button" tabindex="0">
+        <img class="film-poster" alt="">
+        <div class="film-title"></div>
+    </div>
+</template>
+
+<script>
+    /**
+     * Frontend til jeres backend:
+     * - GET /api/scheduling/week            -> liste af Screening (med movie indlejret)
+     * - GET /api/screenings/{id}            -> Screening detaljer (forsøges brugt til layout)
+     * - GET /api/screenings/{id}/available-seats -> liste af Seat objekter (tilgængelige sæder)
+     * - POST /api/reservations              -> opret reservation
+     *
+     * Antagelser / tolerant design:
+     * - Screening-objekt indeholder mindst: id (eller showId), start/time, movie (med title/ poster/backdrop), theatre/screen
+     * - Seat-objekt indeholder mindst: id (f.eks. "A5") eller row + col eller seatNumber
+     * - Reservation request body bygges som:
+     *    { screeningId, seatIds: [...], customerName, email, phone }
+     *   Hvis jeres CreateReservationRequest bruger andre feltnavne, ret buildReservationPayload().
+     */
+
+        // Element refs
+    const filmsLoader = document.getElementById('filmsLoader');
+    const filmContainer = document.getElementById('filmContainer');
+    const panelShowtimes = document.getElementById('panelShowtimes');
+    const timesWrap = document.getElementById('timesWrap');
+    const timesLoader = document.getElementById('timesLoader');
+    const showtimeInfo = document.getElementById('showtimeInfo');
+
+    const panelSeats = document.getElementById('panelSeats');
+    const seatMap = document.getElementById('seatMap');
+    const seatsLoader = document.getElementById('seatsLoader');
+    const screenNote = document.getElementById('screenNote');
+
+    const selFilm = document.getElementById('selFilm');
+    const selTime = document.getElementById('selTime');
+    const selSeats = document.getElementById('selSeats');
+    const summaryCount = document.getElementById('summaryCount');
+    const priceInfo = document.getElementById('priceInfo');
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const formStatus = document.getElementById('formStatus');
+
+    const bookingForm = document.getElementById('bookingForm');
+
+    let screenings = [];         // raw screenings from /api/scheduling/week
+    let uniqueMovies = [];       // dedup movies
+    let selectedMovie = null;
+    let movieScreenings = [];    // screenings for selected movie
+    let selectedScreening = null;
+    let availableSeats = [];     // seats returned from /available-seats (list of seat objects)
+    let screeningDetail = null;  // result from GET /api/screenings/{id}
+    let selectedSeatIds = new Set();
+    let seatPricePer = null;
+
+    document.addEventListener('DOMContentLoaded', init);
+    document.getElementById('help').addEventListener('click', ()=> alert('Vælg film → tidspunkt → sæder → kontaktinfo → bekræft.'));
+    document.getElementById('restart').addEventListener('click', resetAll);
+    bookingForm.addEventListener('submit', handleSubmit);
+
+    async function init(){
+        filmsLoader.innerHTML = '<span class="loader"></span> Henter uges screenings...';
+        try {
+            const res = await fetch('http://localhost:8080/api/scheduling/week');
+            if (!res.ok) throw new Error('Kunne ikke hente uge-plan');
+            screenings = await res.json();
+            buildMovieList(screenings);
+        } catch (err) {
+            filmContainer.innerHTML = '<div class="muted-small">Fejl ved hentning af screenings.</div>';
+            console.error(err);
+        } finally {
+            filmsLoader.innerHTML = '';
+        }
+    }
+
+    // Build unique movies from screenings
+    function buildMovieList(allScreenings){
+        // screenings may have screening.movie object
+        const map = new Map();
+        allScreenings.forEach(s => {
+            const m = s.movie || s.getMovie || s.movieObject || null;
+            if (m) {
+                const key = m.id || m.movieId || m.title;
+                if (!map.has(key)) map.set(key, m);
+            }
+        });
+        uniqueMovies = Array.from(map.values());
+        if (uniqueMovies.length === 0) {
+            // fallback: try grouping by screening.movieTitle or screening.title
+            const fallback = {};
+            allScreenings.forEach(s => {
+                const title = s.movieTitle || s.title || (s.movie && s.movie.title) || 'Ukendt';
+                if (!fallback[title]) fallback[title] = { title, poster: s.movie && s.movie.poster };
+            });
+            uniqueMovies = Object.values(fallback);
+        }
+
+        renderMovies(uniqueMovies);
+    }
+
+    // Render film cards
+    function renderMovies(movies){
+        filmContainer.innerHTML = '';
+        const tpl = document.getElementById('filmTpl');
+        movies.forEach(m => {
+            const node = tpl.content.firstElementChild.cloneNode(true);
+            const img = node.querySelector('.film-poster');
+            img.src = m.poster || m.backdrop || 'placeholder-poster.jpg';
+            img.alt = (m.title || 'Ukendt film') + ' plakat';
+            node.querySelector('.film-title').textContent = m.title || m.movieTitle || 'Ukendt';
+            node.addEventListener('click', ()=> onMovieSelect(m));
+            node.addEventListener('keydown', (e)=> { if (e.key === 'Enter') onMovieSelect(m); });
+            filmContainer.appendChild(node);
+        });
+    }
+
+    // Movie selected -> filter screenings and show times
+    function onMovieSelect(movie){
+        selectedMovie = movie;
+        selFilm.textContent = movie.title || movie.movieTitle || 'Ukendt';
+        // filter screenings by movie (matching id or title)
+        movieScreenings = screenings.filter(s => {
+            if (s.movie) {
+                return (s.movie.id && movie.id && s.movie.id === movie.id) || (s.movie.title && s.movie.title === movie.title);
+            }
+            // fallback check
+            const title = s.movieTitle || s.title;
+            return title && title === (movie.title || movie.movieTitle);
+        }).sort((a,b)=> new Date(a.startTime || a.time || a.date).getTime() - new Date(b.startTime || b.time || b.date).getTime());
+
+        renderShowtimes(movieScreenings);
+    }
+
+    function renderShowtimes(list){
+        timesWrap.innerHTML = '';
+        if (!list || list.length === 0) {
+            panelShowtimes.hidden = true;
+            showtimeInfo.textContent = 'Ingen forestillinger for denne film i ugen.';
+            return;
+        }
+        panelShowtimes.hidden = false;
+        showtimeInfo.textContent = '';
+
+        list.forEach(s => {
+            const btn = document.createElement('button');
+            btn.className = 'btn time-btn btn-toggle';
+            const timeStr = s.startTime || s.time || s.dateTime || s.date || s.showTime;
+            btn.textContent = formatDate(timeStr);
+            btn.title = `Sal: ${s.screen || (s.theatre && s.theatre.name) || '—'} — ID: ${s.id || s.showId || s.screeningId || ''}`;
+            btn.addEventListener('click', async () => {
+                Array.from(timesWrap.children).forEach(c => c.setAttribute('aria-pressed','false'));
+                btn.setAttribute('aria-pressed','true');
+                await onShowtimeSelect(s);
+            });
+            timesWrap.appendChild(btn);
+        });
+    }
+
+    // Helper date formatter (dansk kort)
+    function formatDate(iso){
+        const d = new Date(iso);
+        if (isNaN(d)) return iso || 'Ukendt tid';
+        return d.toLocaleString('da-DK', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+    }
+
+    // Showtime selected: fetch details + seats
+    async function onShowtimeSelect(s){
+        selectedScreening = s;
+        selTime.textContent = formatDate(s.startTime || s.time || s.dateTime || s.date || s.showTime);
+        seatPricePer = s.price || s.ticketPrice || s.pricePer || null;
+        if (seatPricePer) priceInfo.textContent = seatPricePer + ' kr. / stk';
+        else priceInfo.textContent = 'Pris ukendt';
+
+        // Show seats panel
+        panelSeats.hidden = false;
+        seatMap.innerHTML = '';
+        screenNote.textContent = `Lærred — Sal ${s.screen || (s.theatre && s.theatre.name) || '—'}`;
+
+        // Load screening details (try to get full seat layout) and available seats
+        seatsLoader.innerHTML = '<span class="loader"></span> Henter sæder...';
+        try {
+            const detail = await fetchScreeningDetail(s);
+            screeningDetail = detail;
+        } catch (err) {
+            console.warn('Kunne ikke hente screening detail:', err);
+            screeningDetail = null;
+        }
+
+        try {
+            const avail = await fetchAvailableSeats(s);
+            availableSeats = avail || [];
+        } catch (err) {
+            console.error('Fejl ved hentning af available seats', err);
+            availableSeats = [];
+        } finally {
+            seatsLoader.innerHTML = '';
+        }
+
+        renderSeatLayout();
+    }
+
+    async function fetchScreeningDetail(s){
+        // Try to derive screening id
+        const id = s.id || s.screeningId || s.showId;
+        if (!id) throw new Error('Ingen screening-id i objekt');
+        const res = await fetch(`/api/screenings/${encodeURIComponent(id)}`);
+        if (!res.ok) throw new Error('No screening detail');
+        return await res.json();
+    }
+
+    async function fetchAvailableSeats(s){
+        const id = s.id || s.screeningId || s.showId;
+        const res = await fetch(`http://localhost:8080/api/screenings/${encodeURIComponent(id)}/available-seats`);
+        if (!res.ok) {
+            // fallback: return empty array
+            return [];
+        }
+        return await res.json(); // expect array of seat objects
+    }
+
+    function renderSeatLayout(){
+        seatMap.innerHTML = '';
+        selectedSeatIds.clear();
+        updateSelectionUI();
+
+        if (!Array.isArray(availableSeats) || availableSeats.length === 0){
+            seatMap.innerHTML = '<div class="muted-small">Ingen sæder tilgængelige.</div>';
+            return;
+        }
+
+        // Find hvilke rækker og kolonner der findes i denne forestilling
+        const rowsSet = new Set(availableSeats.map(s => s.rowNumber || s.row || 1));
+        const colsSet = new Set(availableSeats.map(s => s.seatNumber || s.col || 1));
+
+        const rows = Array.from(rowsSet).sort((a,b)=>a-b);
+        const cols = Array.from(colsSet).sort((a,b)=>a-b);
+
+        seatMap.style.gridTemplateColumns = `repeat(${cols.length}, auto)`;
+
+        // Lav et map med tilgængelige seats
+        const availIds = new Set(availableSeats.map(s => seatIdFromObj(s)));
+
+        // Tegn alle pladser for denne forestilling
+        rows.forEach(r => {
+            cols.forEach(c => {
+                const id = `R${r}S${c}`; // unik id per row+seat
+                const occupied = !availIds.has(id);
+                seatMap.appendChild(makeSeatNode(id, occupied));
+            });
+        });
+    }
+
+    // Helper: få seatId fra objekt
+    function seatIdFromObj(s){
+        return s.id || (s.rowNumber != null && s.seatNumber != null ? `R${s.rowNumber}S${s.seatNumber}` : `${s.row}${s.col}`);
+    }
+
+    // makeSeatNode forbliver den samme
+
+
+    // Render when we have complete seats array (each seat may have occupied flag)
+    function renderFromSeatArray(seats, availList){
+        // determine rows (labels) and cols
+        const rowLabels = Array.from(new Set(seats.map(s => s.row))).sort();
+        const colNums = Array.from(new Set(seats.map(s => s.col))).sort((a,b)=>a-b);
+        seatMap.style.gridTemplateColumns = `repeat(${colNums.length}, auto)`;
+
+        // Build map of available seats for quick lookup (backend's /available-seats may contain seat ids)
+        const availIds = new Set((availList||[]).map(s => seatIdFromObj(s)));
+
+        seats.forEach(s => {
+            const id = seatIdFromObj(s);
+            const occupied = s.occupied === true || (availIds.size>0 && !availIds.has(id));
+            const node = makeSeatNode(id, occupied);
+            seatMap.appendChild(node);
+        });
+    }
+
+    // Render when we only have rows & cols counts
+    function renderFromGrid(rowsNum, colsNum, availList){
+        // build row labels A,B,C...
+        const rows = Array.from({length:rowsNum}, (_,i)=> String.fromCharCode(65+i));
+        const cols = Array.from({length:colsNum}, (_,i)=> i+1);
+        seatMap.style.gridTemplateColumns = `repeat(${cols.length}, auto)`;
+
+        const availSet = new Set((availList||[]).map(s => seatIdFromObj(s)));
+
+        rows.forEach(r => {
+            cols.forEach(c => {
+                const id = `${r}${c}`;
+                const occupied = availSet.size>0 ? !availSet.has(id) : false;
+                seatMap.appendChild(makeSeatNode(id, occupied));
+            });
+        });
+    }
+
+    // Render when we only know available seats (cannot show occupied places)
+    function renderFromAvailableOnly(availList){
+        seatMap.style.gridTemplateColumns = `repeat(8, auto)`;
+        availList.forEach(s => {
+            const id = seatIdFromObj(s);
+            // available by definition
+            const node = makeSeatNode(id, false);
+            seatMap.appendChild(node);
+        });
+    }
+
+    // Create seat DOM node
+    function makeSeatNode(id, occupied){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'seat ' + (occupied ? 'occupied' : 'free');
+        btn.dataset.seatId = id;
+        btn.title = occupied ? `Optaget — ${id}` : `Vælg sæde ${id}`;
+        btn.textContent = id;
+
+        if (!occupied) {
+            btn.addEventListener('click', ()=> {
+                if (selectedSeatIds.has(id)) {
+                    selectedSeatIds.delete(id);
+                    btn.classList.remove('selected');
+                } else {
+                    selectedSeatIds.add(id);
+                    btn.classList.add('selected');
+                }
+                updateSelectionUI();
+            });
+        } else {
+            btn.setAttribute('aria-disabled','true');
+        }
+        return btn;
+    }
+
+
+
+    // Update selection summary + enable confirm button
+    function updateSelectionUI(){
+        selSeats.innerHTML = '';
+        if (selectedSeatIds.size === 0) {
+            selSeats.textContent = '—';
+            summaryCount.textContent = '0 valgt';
+            confirmBtn.disabled = true;
+        } else {
+            Array.from(selectedSeatIds).sort().forEach(id => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.textContent = id;
+                selSeats.appendChild(chip);
+            });
+            summaryCount.textContent = `${selectedSeatIds.size} valgt`;
+            confirmBtn.disabled = false;
+        }
+
+        // update price total
+        if (seatPricePer) {
+            const total = seatPricePer * selectedSeatIds.size;
+            priceInfo.textContent = `${seatPricePer} kr. / stk — Total: ${total} kr.`;
+        }
+    }
+
+    // Build reservation payload — adjust here if backend expects other fieldnames
+    function buildReservationPayload(name, email, phone){
+        // Default assumed body structure (tolerant):
+        return {
+            // Commonly expected: screeningId OR showId OR screening.id
+            screeningId: selectedScreening.id || selectedScreening.screeningId || selectedScreening.showId,
+            // seats as array of seat ids (strings) — backend may expect seat numbers/ids or Seat objects
+            seatIds: Array.from(selectedSeatIds),
+            // customer fields — rename if your CreateReservationRequest expects other names
+            customerName: name,
+            email: email,
+            phone: phone
+        };
+    }
+
+    // Submit booking
+    async function handleSubmit(e){
+        e.preventDefault();
+        formStatus.textContent = '';
+        if (!selectedScreening) return alert('Vælg først en forestilling');
+        if (selectedSeatIds.size === 0) return alert('Vælg mindst ét sæde');
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        if (!name || !email || !phone) { alert('Udfyld navn, e-mail og telefon'); return; }
+
+        confirmBtn.disabled = true;
+        formStatus.innerHTML = '<span class="loader"></span> Forsøger at booke...';
+
+        const payload = buildReservationPayload(name, email, phone);
+
+        try {
+            const res = await fetch('/api/reservations', {
+                method: 'POST',
+                headers: { 'Content-Type':'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.status === 201 || res.ok) {
+                // success
+                const data = await res.json().catch(()=>null);
+                formStatus.textContent = 'Booking bekræftet';
+                formStatus.style.color = 'var(--beige)';
+                // best-effort: mark seats as occupied in UI
+                Array.from(selectedSeatIds).forEach(id => {
+                    const node = seatMap.querySelector(`[data-seat-id="${id}"]`);
+                    if (node) {
+                        node.classList.remove('selected'); node.classList.remove('free'); node.classList.add('occupied');
+                        node.setAttribute('aria-disabled','true');
+                        node.title = 'Optaget';
+                    }
+                });
+                selectedSeatIds.clear();
+                updateSelectionUI();
+                // show confirmation id if returned
+                if (data && (data.reservationId || data.id || data.confirmation)) {
+                    formStatus.textContent += ` — Ref: ${data.reservationId || data.id || data.confirmation}`;
+                }
+            } else {
+                const txt = await res.text().catch(()=>null);
+                throw new Error(txt || `Server returnerede ${res.status}`);
+            }
+        } catch (err) {
+            console.error(err);
+            formStatus.textContent = 'Kunne ikke gennemføre booking: ' + (err.message || 'ukendt fejl');
+            formStatus.style.color = 'tomato';
+        } finally {
+            confirmBtn.disabled = false;
+        }
+    }
+
+    // Reset UI to start
+    function resetAll(){
+        selectedMovie = null;
+        movieScreenings = [];
+        selectedScreening = null;
+        availableSeats = [];
+        screeningDetail = null;
+        selectedSeatIds.clear();
+        selFilm.textContent = '—';
+        selTime.textContent = '—';
+        selSeats.textContent = '—';
+        priceInfo.textContent = '—';
+        panelShowtimes.hidden = true;
+        panelSeats.hidden = true;
+        seatMap.innerHTML = '';
+        formStatus.textContent = '';
+        confirmBtn.disabled = true;
+        // scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

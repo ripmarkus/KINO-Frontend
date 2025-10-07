@@ -6,7 +6,6 @@
     <title>KinoXP | Employee Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
-    <link rel="stylesheet" href="../stylesheet/employeeStyleSheet.css" />
 </head>
 <body>
 
@@ -20,7 +19,9 @@
         <h1 class="topbar-title">Employee Dashboard</h1>
     </div>
     <div class="topbar-right">
-        <button class="btn-ghost" id="logoutBtn" aria-label="Log ud">Logout</button>
+        <a href="index.html">
+            <button class="btn-ghost" id="logoutBtn" aria-label="Log ud">Logout</button>
+        </a>
     </div>
 </header>
 
@@ -30,7 +31,8 @@
             <h2 id="ticket-h2">Ticket Management</h2>
         </header>
         <div class="panel-actions">
-            <button class="btn btn-primary">Sell Tickets</button>
+            <a href="ChooseMovie.html">
+                <button class="btn btn-primary">Sell Tickets</button></a>
             <button class="btn btn-outline">Check Seat Availability</button>
         </div>
     </section>
