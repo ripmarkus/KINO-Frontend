@@ -6,6 +6,12 @@
     <title>KinoXP | Employee Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kræv at brugeren har mindst én af disse roller for at se siden
+        requireAnyRole("SALES_CLERK", "MANAGER");
+    </script>
 </head>
 <body>
 
@@ -13,7 +19,7 @@
 
 <header class="topbar">
     <div class="topbar-left">
-        <a href="employee-dashboard.html" class="logo-wrap" aria-label="KinoXP forside">
+        <a href="#" class="logo-wrap" onclick="goHomeByRole(); return false;">
             <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
         </a>
         <h1 class="topbar-title">Employee Dashboard</h1>

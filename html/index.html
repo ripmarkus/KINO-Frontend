@@ -23,13 +23,13 @@
 
 <!-- Login-boks -->
 <main class="app-main auth-main">
-    <h1 class="topbar-title" style="text-align: center;">Login</h1>
+    <h1 class="topbar-title">Login</h1>
 
     <section class="panel auth-card">
         <form id="loginForm" method="post" action="/api/auth/login" novalidate>
             <div class="input-field">
-                <label for="email">Enter your email</label>
-                <input type="email" id="email" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required />
+                <label for="username">Enter your username</label>
+                <input type="text" id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required />
             </div>
 
             <div class="input-field">
@@ -49,6 +49,7 @@
 </main>
 
 <script src="../js/login.js"></script>
+
 
 </body>
 </html>
