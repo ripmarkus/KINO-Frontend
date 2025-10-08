@@ -313,6 +313,18 @@ body{
     color: #9E1C23;
 }
 
+.cancel-movie-link {
+    color: #B1212A;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+.cancel-movie-link:hover {
+    color: #9E1C23;
+}
+
 /* Ticket count styling */
 .ticket-count {
     text-align: center;

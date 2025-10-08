@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -46,8 +46,8 @@
                     <th>Date</th>
                     <th>Time</th>
                     <th>Movie</th>
-                    <th class="col-actions">Action</th>
                     <th>Tickets Sold</th>
+                    <th class="col-actions">Action</th>
                 </tr>
                 </thead>
                 <tbody><!-- JS --></tbody>
@@ -55,7 +55,6 @@
         </div>
     </section>
 
-    <!-- MOVIES PANEL -->
     <section class="panel" aria-labelledby="movie-h2">
         <header class="panel-header">
             <h2 id="movie-h2">Available Movies</h2>
@@ -83,32 +82,34 @@
 
 </main>
 
-<!-- 🆕 Add Screening Modal -->
 <div id="addScreeningModal" class="modal hidden">
     <div class="modal-content">
         <span class="close-btn" id="closeModalBtn">&times;</span>
-        <h2>Add New Screening</h2>
+        <h2 style="color: black">Add New Screening</h2>
 
         <form id="addScreeningForm">
-            <label for="movieSelect">Movie:</label>
+            <label style="color: black" for="movieSelect">Movie:</label>
             <select id="movieSelect" required>
                 <option value="">Select a movie</option>
             </select>
 
-            <label for="theatreSelect">Theatre:</label>
+            <label  style="color: black" for="theatreSelect">Theatre:</label>
             <select id="theatreSelect" required>
                 <option value="">Select a theatre</option>
             </select>
 
-            <label for="startTimeInput">Start Time:</label>
-            <input type="datetime-local" id="startTimeInput" required>
+            <label style="color: black"  for="dateInput">Date:</label>
+            <input type="text" id="dateInput" placeholder="dd/mm/yyyy" required pattern="\d{2}/\d{2}/\d{4}">
 
-            <label for="operatorSelect">Operator:</label>
+            <label  style="color: black" for="timeInput">Time:</label>
+            <input type="time" id="timeInput" required>
+
+            <label style="color: black"  for="operatorSelect">Operator:</label>
             <select id="operatorSelect" required>
                 <option value="">Select an operator</option>
             </select>
 
-            <button type="submit" class="btn btn-primary">Add Screening</button>
+            <button style="margin-top: 50px" class="btn btn-primary" type="submit">Add Screening</button>
         </form>
     </div>
 </div>

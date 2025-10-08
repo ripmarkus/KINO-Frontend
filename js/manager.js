@@ -1,270 +1,256 @@
 let allScreenings = [];
+let allMovies = [];
 let currentTheatreId = 1;
 
-// API calls
-const fetchScreenings = () => fetch("http://localhost:8080/api/screenings").then(r => r.json());
-const fetchSeats = (id) => fetch(`http://localhost:8080/api/screenings/${id}/available-seats`).then(r => r.json()).catch(() => null);
-const deleteScreening = (id) => fetch(`http://localhost:8080/api/screenings/delete/${id}`, {method: 'DELETE'});
-const createScreening = (screening) => fetch("http://localhost:8080/api/screenings", {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(screening)
-});
+
+const api = (url, options = {}) =>
+    fetch(`http://localhost:8080/api/${url}`, options).then(r =>
+        r.ok ? r.json() : Promise.reject("API error"));
+
+const formatStartTime = (date, time) => {
+    const [d, m, y] = date.split('/');
+    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}T${time}:00`;
+};
+
+const showMessage = msg =>
+    document.querySelector("#scheduleTable tbody").innerHTML =
+        `<tr><td colspan="5" class="table-message">${msg}</td></tr>`;
 
 async function loadScreenings() {
     showMessage("Loading screenings...");
-    
+
     try {
-        allScreenings = await fetchScreenings();
+        allScreenings = await api("screenings");
         allScreenings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-        
-        // Populate theatres and operators from screening data
-        populateTheatresFromScreenings();
-        populateOperatorsFromScreenings();
-        
-        const seatPromises = allScreenings.map(async screening => {
-            const capacity = screening.theatre.numRows * screening.theatre.seatsPerRow;
-            const seats = await fetchSeats(screening.showId);
-            screening.ticketInfo = seats ? `${capacity - seats.length}/${capacity}` : `?/${capacity}`;
-            return screening;
-        });
-        
-        await Promise.all(seatPromises);
+
+        populateDropdowns();
+
+        await Promise.all(allScreenings.map(async s => {
+            const cap = s.theatre.numRows * s.theatre.seatsPerRow;
+            const seats = await api(`screenings/${s.showId}/available-seats`).catch(() => null);
+            s.ticketInfo = seats ? `${cap - seats.length}/${cap}` : `?/${cap}`;
+        }));
+
         displayScreenings();
-    } catch (error) {
+    } catch {
         showMessage("Error loading screenings");
     }
 }
 
-function displayScreenings() {
-    const scheduleTableBody = document.querySelector("#scheduleTable tbody");
-    const filtered = allScreenings.filter(s => s.theatre.theatreId == currentTheatreId);
-    scheduleTableBody.innerHTML = '';
-    
-    filtered.forEach(screening => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${new Date(screening.startTime).toLocaleDateString('da-DK')}</td>
-            <td>${new Date(screening.startTime).toLocaleTimeString('da-DK', {hour:'2-digit', minute:'2-digit'})}</td>
-            <td>${screening.movie.title}</td>
-            <td class="col-actions">
-                <button class="btn btn-outline">Change</button>
-                <span class="cancel-screening-link">Cancel screening</span>
-            </td>
-            <td class="ticket-count"><strong>${screening.ticketInfo}</strong></td>
-        `;
-        
-        row.querySelector('.cancel-screening-link').addEventListener('click', () => cancelScreening(screening.showId));
-        scheduleTableBody.appendChild(row);
-    });
+async function loadMovies() {
+    showMessage("Loading movies...");
+    try {
+        allMovies = await api("movies");
+        populateMovieTable();
+    } catch {
+        showMessage("Error loading movies");
+    }
 }
 
-function showMessage(msg) {
-    const scheduleTableBody = document.querySelector("#scheduleTable tbody");
-    scheduleTableBody.innerHTML = `<tr><td colspan="5" class="table-message">${msg}</td></tr>`;
+function displayScreenings() {
+    const tbody = document.querySelector("#scheduleTable tbody");
+    tbody.innerHTML = '';
+
+    allScreenings
+        .filter(s => s.theatre.theatreId == currentTheatreId)
+        .forEach(s => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${new Date(s.startTime).toLocaleDateString('da-DK')}</td>
+                <td>${new Date(s.startTime).toLocaleTimeString('da-DK', {hour:'2-digit', minute:'2-digit'})}</td>
+                <td>${s.movie.title}</td>
+                <td class="ticket-count"><strong>${s.ticketInfo}</strong></td>
+                <td class="col-actions">
+                    <button class="btn btn-outline">Change</button>
+                    <span class="cancel-screening-link">Cancel</span>
+                </td>
+            `;
+            row.querySelector('.cancel-screening-link').onclick = () => cancelScreening(s.showId);
+            tbody.appendChild(row);
+        });
 }
 
 async function cancelScreening(id) {
     if (!confirm('Cancel this screening?')) return;
-    
-    const response = await deleteScreening(id);
-    if (response.ok) {
+
+    const res = await fetch(`http://localhost:8080/api/screenings/delete/${id}`, { method: 'DELETE' });
+    if (res.ok) {
         allScreenings = allScreenings.filter(s => s.showId !== id);
         displayScreenings();
         alert('Cancelled');
-    } else {
-        alert('Failed');
-    }
+    } else alert('Failed');
 }
 
-async function populateMovies() {
-    console.log("populateMovies called");
+async function deleteMovie(id) {
+    if (!confirm('Delete this movie?')) return;
+
+    const res = await fetch(`http://localhost:8080/api/movies/delete/${id}`, { method: 'DELETE' });
+    console.log("DELETE status:", res.status);
+    const text = await res.text();
+    console.log("Response body:", text);
+    if (res.ok) {
+        allMovies = allMovies.filter(m => m.movieId !== id);
+        await populateMovieTable();
+        alert('Movie deleted');
+    } else alert('Failed');
+}
+
+async function populateMovieTable() {
     try {
-        const response = await fetch("http://localhost:8080/api/movies");
-        console.log("Movies response status:", response.status);
-        const movies = await response.json();
-        console.log("Movies data:", movies);
+        const tbody = document.getElementById("movieList");
+        tbody.innerHTML = "";
 
-        const movieSelect = document.getElementById("movieSelect");
-        console.log("movieSelect element:", movieSelect);
-        if (!movieSelect) {
-            console.error("movieSelect element not found");
-            return;
-        }
-        
-        movieSelect.innerHTML = "<option value=''>Select a movie</option>";
-
-        movies.forEach(movie => {
-            const option = document.createElement("option");
-            option.value = movie.movieId;
-            option.textContent = movie.title;
-            movieSelect.appendChild(option);
+        allMovies.forEach(movie => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${movie.title}</td>
+                <td>${movie.ageLimit || "–"}</td>
+                <td>${movie.duration} min</td>
+                <td>${movie.genre?.genreName || "–"}</td>
+                <td class="col-description">${movie.description || "–"}</td>
+                <td class="col-actions">
+                    <button class="btn btn-outline">Edit</button>
+                    <span class="cancel-movie-link">Delete</span>
+                </td>
+            `;
+            row.querySelector('.cancel-movie-link').onclick = () => deleteMovie(movie.movieId);
+            tbody.appendChild(row);
         });
-        console.log("Movies populated successfully, total:", movies.length);
-    } catch (error) {
-        console.error("Error loading movies:", error);
+    } catch {
+        document.getElementById("movieList").innerHTML = `
+            <tr><td colspan="6">Failed to load movies</td></tr>
+        `;
     }
 }
 
-// Populate theatres from existing screenings data
-function populateTheatresFromScreenings() {
-    const uniqueTheatres = [];
-    const theatreIds = new Set();
-    
-    allScreenings.forEach(screening => {
-        if (!theatreIds.has(screening.theatre.theatreId)) {
-            theatreIds.add(screening.theatre.theatreId);
-            uniqueTheatres.push(screening.theatre);
-        }
-    });
+async function populateDropdowns() {
+    const [movies] = await Promise.all([api("movies")]);
 
-    const theatreSelect = document.getElementById("theatreSelect");
-    theatreSelect.innerHTML = "<option value=''>Select a theatre</option>";
+    const setOptions = (selectId, items, idKey, textKey) => {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        select.innerHTML = "<option value=''>Select</option>";
+        items.forEach(item => {
+            const opt = new Option(item[textKey], item[idKey]);
+            select.appendChild(opt);
+        });
+    };
 
-    uniqueTheatres.forEach(theatre => {
-        const option = document.createElement("option");
-        option.value = theatre.theatreId;
-        option.textContent = theatre.name;
-        theatreSelect.appendChild(option);
-    });
+    const theatres = Array.from(new Map(allScreenings.map(s => [s.theatre.theatreId, s.theatre])).values());
+    const operators = Array.from(new Map(allScreenings.map(s => [s.operator.employeeId, s.operator])).values());
+
+    setOptions("movieSelect", movies, "movieId", "title");
+    setOptions("theatreSelect", theatres, "theatreId", "name");
+    setOptions("operatorSelect", operators, "employeeId", "name");
 }
 
-// Populate operators from existing screenings data
-function populateOperatorsFromScreenings() {
-    const uniqueOperators = [];
-    const operatorIds = new Set();
-    
-    allScreenings.forEach(screening => {
-        if (!operatorIds.has(screening.operator.employeeId)) {
-            operatorIds.add(screening.operator.employeeId);
-            uniqueOperators.push(screening.operator);
-        }
-    });
-
-    const operatorSelect = document.getElementById("operatorSelect");
-    operatorSelect.innerHTML = "<option value=''>Select an operator</option>";
-
-    uniqueOperators.forEach(operator => {
-        const option = document.createElement("option");
-        option.value = operator.employeeId;
-        option.textContent = operator.name;
-        operatorSelect.appendChild(option);
-    });
-}
-
-// Fetch and populate theatre dropdown
-async function populateTheatres() {
-    const response = await fetch("http://localhost:8080/api/theatres");
-    const theatres = await response.json();
-
-    const theatreSelect = document.getElementById("theatreSelect");
-    theatreSelect.innerHTML = "<option value=''>Select a theatre</option>";
-
-    theatres.forEach(theatre => {
-        const option = document.createElement("option");
-        option.value = theatre.theatreId;
-        option.textContent = theatre.name;
-        theatreSelect.appendChild(option);
-    });
+function setupModalControls() {
+    const modalScreening = document.getElementById('addScreeningModal');
+    const modalMovie = document.getElementById('addMovieModal');
+    document.getElementById('addScreeningBtn').onclick = () => modalScreening.classList.remove('hidden');
+    document.getElementById('closeModalBtn').onclick = () => modalScreening.classList.add('hidden');
+    document.getElementById('addScreeningBtn').onclick = () => modalMovie.classList.remove('hidden');
+    document.getElementById('closeModalBtn').onclick = () => modalMovie.classList.add('hidden');
+    window.onclick = e => { if (e.target === modalScreening) modalScreening.classList.add('hidden'); };
+    window.onclick = e => { if (e.target === modalScreening) modalScreening.classList.add('hidden'); };
 }
 
 
-// Modal controls and event listeners
-document.addEventListener("DOMContentLoaded", async () => {
+function setupFormHandler() {
     const modal = document.getElementById('addScreeningModal');
-    const addScreeningBtn = document.getElementById('addScreeningBtn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const addScreeningForm = document.getElementById('addScreeningForm');
-    const hallButtons = document.querySelectorAll(".btn-toggle[data-hall]");
+    const form = document.getElementById('addScreeningForm');
 
-    addScreeningBtn.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
-
-    addScreeningForm.addEventListener('submit', async (e) => {
+    form.onsubmit = async (e) => {
         e.preventDefault();
-        
-        const movieId = document.getElementById("movieSelect").value;
-        const theatreId = document.getElementById("theatreSelect").value;
-        const startTime = document.getElementById("startTimeInput").value;
-        const operatorId = document.getElementById("operatorSelect").value;
 
-        console.log("Form values:", { movieId, theatreId, startTime, operatorId });
+        const movieId = form.movieSelect.value;
+        const theatreId = form.theatreSelect.value;
+        const date = form.dateInput.value;
+        const time = form.timeInput.value;
+        const operatorId = form.operatorSelect.value;
 
-        // Format datetime to match API expected format
-        const formattedStartTime = startTime.includes('T') ? startTime + ':00' : startTime;
+        const payload = {
+            movieId: parseInt(movieId),
+            theatreId: parseInt(theatreId),
+            employeeId: parseInt(operatorId),
+            startTime: formatStartTime(date, time)
+        };
 
-        // Fetch full objects for movie, theatre, and operator
         try {
-            const [movieResponse, operatorData] = await Promise.all([
-                fetch(`http://localhost:8080/api/movies/${movieId}`),
-                // Get operator from screenings since there's no employee endpoint
-                new Promise(resolve => {
-                    const operator = allScreenings.find(s => s.operator.employeeId == operatorId)?.operator;
-                    resolve(operator);
-                })
-            ]);
-
-            const movie = await movieResponse.json();
-            const theatre = allScreenings.find(s => s.theatre.theatreId == theatreId)?.theatre;
-
-            if (!movie || !theatre || !operatorData) {
-                alert("Error: Could not fetch required data");
-                return;
-            }
-
-            const screening = {
-                movie: movie,
-                theatre: theatre,
-                startTime: formattedStartTime,
-                operator: operatorData,
-                status: "SCHEDULED"
-            };
-
-            console.log("Screening object:", screening);
-
-            const response = await fetch("http://localhost:8080/api/screenings", {
+            const res = await fetch("http://localhost:8080/api/screenings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(screening)
+                body: JSON.stringify(payload)
             });
 
-            console.log("Response status:", response.status);
-            const responseText = await response.text();
-            console.log("Response body:", responseText);
-
-            if (response.ok) {
-                alert("Screening added successfully!");
+            if (res.ok) {
+                alert("Screening added!");
                 modal.classList.add('hidden');
-                addScreeningForm.reset();
+                form.reset();
                 loadScreenings();
-            } else {
-                alert("Failed to add screening. Check console for details.");
-            }
-        } catch (error) {
-            console.error("Error creating screening:", error);
-            alert("Error creating screening: " + error.message);
+            } else alert("Failed to add screening.");
+        } catch (err) {
+            alert("Error creating screening: " + err.message);
         }
-    });
-    
-    hallButtons.forEach(btn => btn.addEventListener("click", (e) => {
-        hallButtons.forEach(b => b.setAttribute("aria-pressed", "false"));
+    };
+}
+
+function setupMovieFormHandler() {
+    const modalScreening = document.getElementById('addScreeningModal');
+    const form = document.getElementById('addScreeningMovieForm');
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+
+        const movieTitle = form.movieTitle.value;
+        const ageLimit = form.ageLimit.value;
+        const duration = form.duration.value;
+        const genre = form.genre.value;
+        const description = form.description.value;
+
+        const payload = {
+            title: movieTitle,
+            ageLimit: ageLimit,
+            duration: duration,
+            genre: genre,
+            description: description
+        };
+
+        try {
+            const res = await fetch("http://localhost:8080/api/screenings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert("Screening added!");
+                modal.classList.add('hidden');
+                form.reset();
+                loadScreenings();
+            } else alert("Failed to add screening.");
+        } catch (err) {
+            alert("Error creating screening: " + err.message);
+        }
+    };
+}
+
+function setupHallButtons() {
+    const hallBtns = document.querySelectorAll(".btn-toggle[data-hall]");
+
+    hallBtns.forEach(btn => btn.onclick = e => {
+        hallBtns.forEach(b => b.setAttribute("aria-pressed", "false"));
         e.target.setAttribute("aria-pressed", "true");
         currentTheatreId = e.target.dataset.hall === 'hall1' ? 1 : 2;
         displayScreenings();
-    }));
-    
-    // Load initial data
-    await populateMovies();
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupModalControls();
+    setupFormHandler();
+    setupHallButtons();
     loadScreenings();
+    loadMovies();
+    populateMovieTable();
 });
