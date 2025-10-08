@@ -20,17 +20,6 @@ async function loadScreenings() {
     try {
         allScreenings = await fetchScreenings();
         allScreenings.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-        
-        // OLD WAY (Sequential - SLOW): 10 screenings × 200ms = 2+ seconds
-        /*
-        for (const screening of allScreenings) {
-            const seats = await fetchSeats(screening.showId);  // Waits for each one
-            const capacity = screening.theatre.numRows * screening.theatre.seatsPerRow;
-            screening.ticketInfo = seats ? `${capacity - seats.length}/${capacity}` : `?/${capacity}`;
-        }
-        */
-        
-        // NEW WAY (Parallel - FAST): All at once = ~200ms total
         const seatPromises = allScreenings.map(async screening => {
             const capacity = screening.theatre.numRows * screening.theatre.seatsPerRow;
             const seats = await fetchSeats(screening.showId);
@@ -112,7 +101,6 @@ async function addNewScreening() {
     }
 }
 
-// Event listeners
 document.addEventListener("DOMContentLoaded", loadScreenings);
 document.getElementById('addScreeningBtn').addEventListener('click', addNewScreening);
 hallButtons.forEach(btn => btn.addEventListener("click", (e) => {
