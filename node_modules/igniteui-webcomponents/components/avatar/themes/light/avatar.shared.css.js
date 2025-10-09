@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-avatar-background, var(--ig-gray-400));--color: var(--ig-avatar-color, var(--ig-gray-800));--icon-color: var(--ig-avatar-icon-color, var(--ig-gray-800));--border-radius: var(--ig-avatar-border-radius, 0.5rem);--size: var(--ig-avatar-size, max(var(--is-large, 1) * max(5.5rem, -1 * 5.5rem), var(--is-medium, 1) * max(4rem, -1 * 4rem), var(--is-small, 1) * max(2.5rem, -1 * 2.5rem)));--default-size: var(--ig-avatar-default-size, 1)}`;
+//# sourceMappingURL=avatar.shared.css.js.map

@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--pad-block: max(var(--is-large, 1) * max(0.875rem, -1 * 0.875rem), var(--is-medium, 1) * max(0.875rem, -1 * 0.875rem), var(--is-small, 1) * max(0.5rem, -1 * 0.5rem))}[part=content-container] ::slotted(*){font-family:var(--ig-body-2-font-family, var(--ig-font-family));font-size:var(--ig-body-2-font-size);font-weight:var(--ig-body-2-font-weight);font-style:var(--ig-body-2-font-style);line-height:var(--ig-body-2-line-height);letter-spacing:var(--ig-body-2-letter-spacing);text-transform:var(--ig-body-2-text-transform);margin-top:var(--ig-body-2-margin-top);margin-bottom:var(--ig-body-2-margin-bottom);margin:0}`;
+//# sourceMappingURL=tile.indigo.css.js.map

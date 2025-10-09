@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background-active: var(--ig-tree-background-active, var(--ig-gray-100));--foreground-active: var(--ig-tree-foreground-active, var(--ig-gray-900));--hover-color: var(--ig-tree-hover-color, hsl(from var(--ig-gray-200) h s l/0.5));--hover-selected-color: var(--ig-tree-hover-selected-color, hsl(from var(--ig-gray-50) h s l/0.1))}`;
+//# sourceMappingURL=container.shared.css.js.map

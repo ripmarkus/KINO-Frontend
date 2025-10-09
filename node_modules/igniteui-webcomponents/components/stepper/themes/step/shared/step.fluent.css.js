@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `[part~=indicator]{box-shadow:inset 0 0 0 var(--indicator-box-shadow-size) var(--indicator-outline)}[part~=complete-start] [part~=indicator]{box-shadow:inset 0 0 0 var(--indicator-box-shadow-size) var(--complete-indicator-outline)}:host([active]) [part~=indicator]{box-shadow:inset 0 0 0 var(--indicator-box-shadow-size) var(--current-indicator-outline)}[part~=disabled] [part~=indicator]{box-shadow:inset 0 0 0 var(--indicator-box-shadow-size) var(--disabled-indicator-outline)}`;
+//# sourceMappingURL=step.fluent.css.js.map

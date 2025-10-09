@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--pad-block: max(var(--is-large, 1) * max(0.5625rem, -1 * 0.5625rem), var(--is-medium, 1) * max(0.5625rem, -1 * 0.5625rem), var(--is-small, 1) * max(0.5rem, -1 * 0.5rem))}::slotted([slot=title]){font-family:var(--ig-h5-font-family, var(--ig-font-family));font-size:var(--ig-h5-font-size);font-weight:var(--ig-h5-font-weight);font-style:var(--ig-h5-font-style);line-height:var(--ig-h5-line-height);letter-spacing:var(--ig-h5-letter-spacing);text-transform:var(--ig-h5-text-transform);margin-top:var(--ig-h5-margin-top);margin-bottom:var(--ig-h5-margin-bottom);margin:0}`;
+//# sourceMappingURL=tile.bootstrap.css.js.map

@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--symbol-empty-color: var(--ig-rating-symbol-empty-color, var(--ig-gray-700));--symbol-full-color: var(--ig-rating-symbol-full-color, var(--ig-warn-900));--disabled-empty-symbol-color: var(--ig-rating-disabled-empty-symbol-color, var(--ig-warn-100));--disabled-full-symbol-color: var(--ig-rating-disabled-full-symbol-color, var(--ig-warn-100));--ig-theme: fluent}`;
+//# sourceMappingURL=rating.fluent.css.js.map

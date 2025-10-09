@@ -1,0 +1,13 @@
+import { LitElement } from 'lit';
+export default class IgcComboHeaderComponent extends LitElement {
+    static readonly tagName: string;
+    static styles: import("lit").CSSResult[];
+    static register(): void;
+    constructor();
+    protected render(): import("lit-html").TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'igc-combo-header': IgcComboHeaderComponent;
+    }
+}

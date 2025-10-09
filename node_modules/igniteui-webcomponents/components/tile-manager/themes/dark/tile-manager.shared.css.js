@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--hover-border-color: var(--ig-tile-manager-hover-border-color, var(--ig-gray-200));--placeholder-background: var(--ig-tile-manager-placeholder-background, hsl(from var(--ig-primary-700) h s l/0.15));--overlay-background: var(--ig-tile-manager-overlay-background, hsl(from var(--ig-primary-700) h s l/0.5))}`;
+//# sourceMappingURL=tile-manager.shared.css.js.map

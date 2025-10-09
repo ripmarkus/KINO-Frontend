@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--placeholder-background: var(--ig-tile-manager-placeholder-background, hsl(from var(--ig-primary-100) h s l/0.2));--overlay-background: var(--ig-tile-manager-overlay-background, hsl(from var(--ig-primary-100) h s l/0.5));--border-radius: var(--ig-tile-manager-border-radius, 0);--ig-theme: fluent}`;
+//# sourceMappingURL=tile-manager.fluent.css.js.map

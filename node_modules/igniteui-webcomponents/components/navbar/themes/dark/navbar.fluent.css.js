@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-navbar-background, var(--ig-surface-500));--text-color: var(--ig-navbar-text-color, var(--ig-gray-900));--idle-icon-color: var(--ig-navbar-idle-icon-color, var(--ig-primary-500));--hover-icon-color: var(--ig-navbar-hover-icon-color, var(--ig-primary-500));--ig-theme: fluent}`;
+//# sourceMappingURL=navbar.fluent.css.js.map

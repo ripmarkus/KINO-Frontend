@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--elevation: var(--ig-navbar-elevation, var(--ig-elevation-0));--background: var(--ig-navbar-background, var(--ig-surface-500));--text-color: var(--ig-navbar-text-color, var(--ig-gray-800));--idle-icon-color: var(--ig-navbar-idle-icon-color, var(--ig-gray-600));--hover-icon-color: var(--ig-navbar-hover-icon-color, var(--ig-gray-700));--border-color: var(--ig-navbar-border-color, var(--ig-primary-500));--ig-theme: indigo}`;
+//# sourceMappingURL=navbar.indigo.css.js.map

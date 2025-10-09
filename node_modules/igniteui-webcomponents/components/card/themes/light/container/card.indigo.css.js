@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-card-background, var(--ig-gray-900-contrast));--header-text-color: var(--ig-card-header-text-color, var(--ig-gray-800));--actions-text-color: var(--ig-card-actions-text-color, var(--ig-gray-600));--border-radius: var(--ig-card-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.25) * 1.5rem), 1.5rem));--ig-theme: indigo}`;
+//# sourceMappingURL=card.indigo.css.js.map

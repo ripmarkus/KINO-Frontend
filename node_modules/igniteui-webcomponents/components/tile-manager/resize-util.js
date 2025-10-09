@@ -1,0 +1,84 @@
+export class ResizeUtil {
+    constructor(gap) {
+        this.gap = gap;
+    }
+    calculateSnappedDimension(resizeProps) {
+        const { currentDelta, prevDelta, currentSize, gridEntries, startIndex, prevSnapped, } = resizeProps;
+        const effectiveDelta = currentDelta - prevDelta;
+        let snappedSize = currentSize;
+        if (Math.trunc(currentSize) < gridEntries[startIndex - 1]) {
+            return {
+                snappedSize: gridEntries[startIndex - 1],
+                newDelta: currentDelta,
+            };
+        }
+        if (effectiveDelta === 0 && prevSnapped) {
+            return { snappedSize: prevSnapped, newDelta: currentDelta };
+        }
+        let accumulated = 0;
+        for (let i = startIndex - 1; i < gridEntries.length; i++) {
+            const currentEntry = gridEntries[i];
+            const nextEntry = gridEntries[i + 1] ?? currentEntry;
+            const prevEntry = i > 0 ? gridEntries[i - 1] : currentEntry;
+            const halfwayExpand = accumulated + currentEntry + this.gap + nextEntry / 2;
+            const halfwayShrink = accumulated + prevEntry / 2;
+            const entryEnd = accumulated + currentEntry + this.gap;
+            if (effectiveDelta > 0) {
+                if (currentSize >= halfwayExpand &&
+                    currentSize <= entryEnd + nextEntry) {
+                    snappedSize = entryEnd + nextEntry;
+                }
+            }
+            else if (effectiveDelta < 0) {
+                if (currentSize <= halfwayShrink &&
+                    currentSize > accumulated - this.gap) {
+                    snappedSize = accumulated - this.gap;
+                }
+            }
+            accumulated += currentEntry + this.gap;
+        }
+        return { snappedSize, newDelta: currentDelta };
+    }
+    calculateResizedSpan(props) {
+        const { targetSize, tilePosition, tileGridDimension, gap, isRow } = props;
+        const { entries, minSize } = tileGridDimension;
+        let accumulatedSize = 0;
+        let newSpan = tilePosition.span;
+        const sizesAfterStart = entries.slice(tilePosition.start - 1);
+        const availableSize = sizesAfterStart.reduce((sum, s) => sum + s, 0) +
+            (sizesAfterStart.length - 1) * gap;
+        if (targetSize <= sizesAfterStart[0] + gap) {
+            return 1;
+        }
+        if (Math.trunc(targetSize) > Math.trunc(availableSize)) {
+            const remainingSize = targetSize - availableSize;
+            const additionalSpan = Math.ceil(remainingSize / (minSize + gap));
+            newSpan = sizesAfterStart.length + additionalSpan;
+            return isRow ? newSpan : Math.min(entries.length, newSpan);
+        }
+        for (let i = tilePosition.start - 1; i < entries.length; i++) {
+            const currentSize = entries[i];
+            const nextSize = entries[i + 1] ?? currentSize;
+            const halfwayPoint = accumulatedSize + currentSize + gap + nextSize / 2;
+            if (targetSize > halfwayPoint) {
+                newSpan = i + 3 - tilePosition.start;
+            }
+            else {
+                break;
+            }
+            accumulatedSize += currentSize + gap;
+        }
+        return newSpan;
+    }
+    calculatePosition(targetPosition, sizes) {
+        let accumulatedSize = 0;
+        for (const [i, size] of sizes.entries()) {
+            accumulatedSize += size + this.gap;
+            if (Math.trunc(targetPosition) < Math.trunc(accumulatedSize - this.gap)) {
+                return i + 1;
+            }
+        }
+        return 1;
+    }
+}
+//# sourceMappingURL=resize-util.js.map
