@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>KinoXP | Operator</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="../stylesheet/showtime.css"/>
-    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+        <link rel="stylesheet" href="/stylesheet/showtime.css"/>
+    <link rel="stylesheet" href="/stylesheet/kinoxp-base.css" />
 
 
-    <script src="../js/auth.js"></script>
+    <script src="/js/auth.js"></script>
     <script>
         // Kræv at brugeren har mindst én af disse roller for at se siden
         requireAnyRole("OPERATOR", "MANAGER");
@@ -18,13 +18,13 @@
 <body>
 
 <!-- Baggrund -->
-<div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
+<div class="bg" style="background-image:url('/static/Background til KinoXP.png')"></div>
 
 <!-- Header / topbar -->
 <header class="topbar">
     <div class="topbar-left">
         <a href="#" class="logo-wrap"  onclick="goHomeByRole(); return false;">
-            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
+            <img src="/static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
         </a>
         <h1 class="topbar-title">Operator Dashboard</h1>
     </div>
@@ -83,9 +83,9 @@
 
 </main>
 <!-- lige før </body> -->
-<script defer src="../js/timelime.js"></script>              <!-- (din kino.api.js) -->
-<script defer src="../js/showtimes-renderer.js"></script>    <!-- NY -->
-<script defer src="../js/timeline-controller.js"></script>   <!-- uændret bortset fra 1 linje -->
+<script defer src="/js/timelime.js"></script>              <!-- (din kino.api.js) -->
+<script defer src="/js/showtimes-renderer.js"></script>    <!-- NY -->
+<script defer src="/js/timeline-controller.js"></script>   <!-- uændret bortset fra 1 linje -->
 
 
 </body>
