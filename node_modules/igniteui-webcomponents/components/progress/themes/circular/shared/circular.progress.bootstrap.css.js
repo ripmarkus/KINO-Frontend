@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--stroke-thickness: 2px;--scale-factor: 3.05}[part~=label],[part~=value]{font-weight:700}[part~=svg][part~=indeterminate]{animation-duration:.75s}[part~=svg][part~=indeterminate] [part~=fill]{stroke-dashoffset:60% !important;animation:none}[part~=track][part~=indeterminate]{stroke:rgba(0,0,0,0)}[part~=fill]{stroke-width:var(--stroke-thickness)}`;
+//# sourceMappingURL=circular.progress.bootstrap.css.js.map

@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-snackbar-background, var(--ig-gray-100));--text-color: var(--ig-snackbar-text-color, var(--ig-gray-900));--button-color: var(--ig-snackbar-button-color, var(--ig-gray-900));--border-radius: var(--ig-snackbar-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0) * 1.5rem), 1.5rem));--ig-theme: fluent}`;
+//# sourceMappingURL=snackbar.fluent.css.js.map

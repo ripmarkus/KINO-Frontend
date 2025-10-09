@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--elevation: var(--ig-snackbar-elevation, var(--ig-elevation-10));--background: var(--ig-snackbar-background, var(--ig-surface-500));--text-color: var(--ig-snackbar-text-color, var(--ig-surface-500-contrast));--button-color: var(--ig-snackbar-button-color, var(--ig-primary-500));--ig-theme: bootstrap}`;
+//# sourceMappingURL=snackbar.bootstrap.css.js.map

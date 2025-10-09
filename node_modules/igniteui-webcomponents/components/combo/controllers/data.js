@@ -1,0 +1,55 @@
+import FilterDataOperation from '../operations/filter.js';
+import GroupDataOperation from '../operations/group.js';
+export class DataController {
+    constructor(host) {
+        this.host = host;
+        this.grouping = new GroupDataOperation();
+        this.filtering = new FilterDataOperation();
+        this._searchTerm = '';
+        this._compareCollator = new Intl.Collator();
+        this.dataState = [];
+        this.host.addController(this);
+    }
+    runPipeline() {
+        if (this.host.hasUpdated) {
+            this.dataState = this.apply(Array.from(this.host.data));
+            this.host.requestUpdate();
+        }
+    }
+    set searchTerm(value) {
+        this._searchTerm = value;
+        this.runPipeline();
+    }
+    get searchTerm() {
+        return this._searchTerm;
+    }
+    get filteringOptions() {
+        return this.host.filteringOptions;
+    }
+    get groupingOptions() {
+        return {
+            valueKey: this.host.valueKey,
+            displayKey: this.host.displayKey,
+            groupKey: this.host.groupKey,
+            direction: this.host.groupSorting,
+        };
+    }
+    get compareCollator() {
+        return this._compareCollator;
+    }
+    index(data) {
+        return data.map((item, index) => ({
+            value: item,
+            header: false,
+            dataIndex: index,
+        }));
+    }
+    hostConnected() { }
+    apply(data) {
+        let records = this.index(data);
+        records = this.filtering.apply(records, this);
+        records = this.grouping.apply(records, this);
+        return records;
+    }
+}
+//# sourceMappingURL=data.js.map

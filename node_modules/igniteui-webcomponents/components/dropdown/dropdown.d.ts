@@ -1,0 +1,119 @@
+import { IgcBaseComboBoxLikeComponent } from '../common/mixins/combo-box.js';
+import type { AbstractConstructor } from '../common/mixins/constructor.js';
+import { type PopoverPlacement } from '../popover/popover.js';
+import type { PopoverScrollStrategy } from '../types.js';
+import IgcDropdownGroupComponent from './dropdown-group.js';
+import IgcDropdownItemComponent from './dropdown-item.js';
+export interface IgcDropdownComponentEventMap {
+    igcOpening: CustomEvent<void>;
+    igcOpened: CustomEvent<void>;
+    igcClosing: CustomEvent<void>;
+    igcClosed: CustomEvent<void>;
+    igcChange: CustomEvent<IgcDropdownItemComponent>;
+}
+declare const IgcDropdownComponent_base: import("../common/mixins/constructor.js").Constructor<import("../common/mixins/event-emitter.js").EventEmitterInterface<IgcDropdownComponentEventMap>> & AbstractConstructor<IgcBaseComboBoxLikeComponent>;
+/**
+ * Represents a DropDown component.
+ *
+ * @element igc-dropdown
+ *
+ * @fires igcChange - Emitted when the selected item changes.
+ * @fires igcOpening - Emitted just before the dropdown is open.
+ * @fires igcOpened - Emitted after the dropdown is open.
+ * @fires igcClosing - Emitter just before the dropdown is closed.
+ * @fires igcClosed - Emitted after closing the dropdown.
+ *
+ * @slot target - Renders the dropdown's target element.
+ * @slot - Renders the dropdown list items.
+ *
+ * @csspart base - The dropdown list wrapper container.
+ * @csspart list - The dropdown list element.
+ */
+export default class IgcDropdownComponent extends IgcDropdownComponent_base {
+    static readonly tagName = "igc-dropdown";
+    static styles: import("lit").CSSResult[];
+    static register(): void;
+    private readonly _keyBindings;
+    private _rootScrollController;
+    protected readonly _rootClickController: import("../common/controllers/root-click.js").RootClickController;
+    protected _selectedItem: IgcDropdownItemComponent | null;
+    protected _activeItem: IgcDropdownItemComponent;
+    private get _activeItems();
+    private _targetListeners;
+    private _target?;
+    protected trigger: HTMLSlotElement;
+    /** The preferred placement of the component around the target element.
+     * @attr
+     */
+    placement: PopoverPlacement;
+    /**
+     * Determines the behavior of the component during scrolling of the parent container.
+     * @attr scroll-strategy
+     */
+    scrollStrategy: PopoverScrollStrategy;
+    /**
+     * Whether the component should be flipped to the opposite side of the target once it's about to overflow the visible area.
+     * When true, once enough space is detected on its preferred side, it will flip back.
+     * @attr
+     */
+    flip: boolean;
+    /**
+     * The distance from the target element.
+     * @attr
+     */
+    distance: number;
+    /**
+     * Whether the dropdown's width should be the same as the target's one.
+     * @attr same-width
+     */
+    sameWidth: boolean;
+    /** Returns the items of the dropdown. */
+    get items(): IgcDropdownItemComponent[];
+    /** Returns the group items of the dropdown. */
+    get groups(): IgcDropdownGroupComponent[];
+    /** Returns the selected item from the dropdown or null. */
+    get selectedItem(): IgcDropdownItemComponent | null;
+    protected scrollStrategyChanged(): void;
+    protected openStateChange(): void;
+    constructor();
+    protected firstUpdated(): Promise<void>;
+    disconnectedCallback(): void;
+    private handleListBoxClick;
+    private handleChange;
+    private handleSlotChange;
+    private onArrowUp;
+    private onArrowDown;
+    protected onHomeKey(): void;
+    protected onEndKey(): void;
+    protected onTabKey(): void;
+    protected onEscapeKey(): void;
+    protected onEnterKey(): void;
+    protected handleClosing(): void;
+    private activateItem;
+    private _navigateToActiveItem;
+    private _selectItem;
+    private _updateAnchorAccessibility;
+    private getItem;
+    private _setTarget;
+    /** Shows the component. */
+    show(target?: HTMLElement | string): Promise<boolean>;
+    /** Toggles the open state of the component. */
+    toggle(target?: HTMLElement | string): Promise<boolean>;
+    /** Navigates to the item with the specified value. If it exists, returns the found item, otherwise - null. */
+    navigateTo(value: string): IgcDropdownItemComponent | null;
+    /** Navigates to the item at the specified index. If it exists, returns the found item, otherwise - null. */
+    navigateTo(index: number): IgcDropdownItemComponent | null;
+    /** Selects the item with the specified value. If it exists, returns the found item, otherwise - null. */
+    select(value: string): IgcDropdownItemComponent | null;
+    /** Selects the item at the specified index. If it exists, returns the found item, otherwise - null. */
+    select(index: number): IgcDropdownItemComponent | null;
+    /**  Clears the current selection of the dropdown. */
+    clearSelection(): void;
+    protected render(): import("lit-html").TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'igc-dropdown': IgcDropdownComponent;
+    }
+}
+export {};

@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--stripes-color: var(--ig-linear-progress-stripes-color, hsl(from var(--ig-gray-50) h s l/0.2));--track-border-radius: var(--ig-linear-progress-track-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.5) * 0.5rem), 0.5rem));--track-height: var(--ig-linear-progress-track-height, 1rem);--strip-size: var(--ig-linear-progress-strip-size, 0.3125rem);--ig-theme: bootstrap}`;
+//# sourceMappingURL=linear.progress.bootstrap.css.js.map

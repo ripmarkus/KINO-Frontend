@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--file-names-foreground: var(--ig-file-names-foreground, var(--ig-gray-700));--file-selector-button-foreground: var(--ig-file-selector-button-foreground, var(--ig-secondary-500));--file-selector-button-foreground--focused: var(--ig-file-selector-button-foreground--focused, var(--ig-secondary-500));--file-selector-button-foreground--filled: var(--ig-file-selector-button-foreground--filled, var(--ig-secondary-500));--ig-theme: material}`;
+//# sourceMappingURL=file-input.material.css.js.map

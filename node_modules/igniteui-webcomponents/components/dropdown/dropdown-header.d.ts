@@ -1,0 +1,20 @@
+import { LitElement } from 'lit';
+/**
+ * Represents a header item in a igc-dropdown list.
+ *
+ * @element igc-dropdown-header
+ *
+ * @slot - Renders the header.
+ */
+export default class IgcDropdownHeaderComponent extends LitElement {
+    static readonly tagName: string;
+    static styles: import("lit").CSSResult[];
+    static register(): void;
+    constructor();
+    protected render(): import("lit-html").TemplateResult<1>;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'igc-dropdown-header': IgcDropdownHeaderComponent;
+    }
+}

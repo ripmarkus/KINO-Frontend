@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--hover-color: var(--ig-radio-hover-color, var(--ig-gray-700));--focus-outline-color: var(--ig-radio-focus-outline-color, var(--ig-gray-700));--fill-hover-border-color: var(--ig-radio-fill-hover-border-color, var(--ig-primary-800));--empty-color: var(--ig-radio-empty-color, var(--ig-gray-900));--fill-color-hover: var(--ig-radio-fill-color-hover, var(--ig-primary-800));--error-color-hover: var(--ig-radio-error-color-hover, var(--ig-error-700));--ig-theme: fluent}`;
+//# sourceMappingURL=radio.fluent.css.js.map

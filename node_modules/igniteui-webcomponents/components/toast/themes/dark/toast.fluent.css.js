@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-toast-background, var(--ig-gray-100));--border-color: var(--ig-toast-border-color, var(--ig-gray-100));--text-color: var(--ig-toast-text-color, var(--ig-gray-100-contrast));--border-radius: var(--ig-toast-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0) * 1.625rem), 1.625rem));--ig-theme: fluent}`;
+//# sourceMappingURL=toast.fluent.css.js.map
