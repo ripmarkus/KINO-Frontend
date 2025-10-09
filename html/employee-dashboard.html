@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Employee-Dashboard | KinoXP</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css">
+
+    <link rel="stylesheet" href="../stylesheet/styles.css">
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kræv at brugeren har mindst én af disse roller for at se siden
+        requireAnyRole("MANAGER");
+    </script>
+
 </head>
 <body class="dashboard-body">
 

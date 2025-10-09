@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
-    const email = document.getElementById("email");
+    const username = document.getElementById("username");
     const password = document.getElementById("password");
-    const remember = document.getElementById("remember");
     const toggleBtn = document.querySelector(".toggle-password");
     const errorBox = document.getElementById("formError");
     const submitBtn = form.querySelector(".auth-submit");
@@ -19,70 +18,61 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     });
 
-//     // Funktion til at sætte fejlbesked
-//     function setError(message) {
-//         errorBox.textContent = message || "";
-//         errorBox.hidden = !message;
-//     }
-//
-//     // Nulstil fejlbesked ved ny indsendelse
-//     form.addEventListener("submit", async (e) => {
-//         e.preventDefault();
-//         setError(""); // Nulstil fejlbesked
-//
-//         if (!email.value || !password.value) {
-//             setError("Please fill in both email and password.");
-//             return;
-//         }
-//
-//         submitBtn.disabled = true; // Deaktiver knappen for at forhindre flere klik
-//
-//         try {
-//             const csrf = document.querySelector('meta[name="csrf-token"]')?.content; // Hent CSRF-token fra meta-tag
-//
-//             const res = await fetch("api/auth/login", { // Opdateret endpoint
-//                 method: "POST",
-//                 credentials: "include",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     ...(csrf ? {"X-CSRF-Token": csrf} : {})
-//                 },
-//                 // Send data som JSON
-//                 body: JSON.stringify({
-//                     email: email.value.trim(),
-//                     password: password.value,
-//                     remember: !!remember.checked
-//                 })
-//             });
-//
-//             if (!res.ok) {
-//                 setError("Invalid credentials. Please try again."); // Generisk fejlbesked
-//                 return;
-//             }
-//
-//             const data = await res.json().catch(() => ({})); // Håndter JSON parse fejl
-//             const role = data.role?.toUpperCase(); // Forventet at API returnerer brugerrolle
-//
-//             // Rolle-baseret redirect (fallback til employee)
-//             if (role === "MANAGER") {
-//                 window.location.href = "./manager-dashboard.html";
-//             } else if (role === "ADMIN") {
-//                 window.location.href = "./admin-dashboard.html";
-//             } else {
-//                 window.location.href = "./employee-dashboard.html";
-//             }
-//         } catch (err) {
-//             setError("Network error. Please try again."); // Netværksfejl
-//         } finally {
-//             submitBtn.disabled = false; // Genaktiver knappen
-//         }
-//     });
-// });
-
-    // Fake login funktionalitet --> redirect til employee-dashboard.html
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        window.location.href = "./employee-dashboard.html";
+    // Funktion til at sætte fejlbesked
+    function setError(message) {
+        errorBox.textContent = message || "";
+        errorBox.hidden = !message;
     }
-    );
+
+    // Nulstil fejlbesked ved ny indsendelse
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        setError(""); // Nulstil fejlbesked
+
+        if (!username.value || !password.value) {
+            setError("Please fill in both username and password.");
+            return;
+        }
+
+        submitBtn.disabled = true; // Deaktiver knappen for at forhindre flere klik
+
+        try {
+
+            const res = await fetch("http://localhost:8080/api/auth/login", { // Opdateret endpoint
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"},
+                // Send data som JSON
+                body: JSON.stringify({
+                    username: username.value.trim(),
+                    password: password.value.trim()
+                })
+            });
+
+            const data = await res.json().catch(() => ({})); // Håndter JSON parse fejl
+
+            if (!data.success) {
+                setError(data.message || "Invalid credentials. Please try again."); // Generisk fejlbesked
+                return;
+            }
+
+            const role = (data.role || "").toUpperCase(); // Forventet at API returnerer brugerrolle
+
+            localStorage.setItem("roles", JSON.stringify([role])); // Gem rolle i localStorage
+            localStorage.setItem("username", username.value.trim()); // Gem brugernavn
+
+            // Rolle-baseret redirect (fallback til employee)
+            if (role === "MANAGER") {
+                window.location.href = "./employee-dashboard.html";
+            } else if (role === "OPERATOR") {
+                window.location.href = "./operator.html";
+            } else {
+                window.location.href = "./employee.html";
+            }
+        } catch (err) {
+            setError("Network error. Please try again."); // Netværksfejl
+        } finally {
+            submitBtn.disabled = false; // Genaktiver knappen
+        }
+    });
 });
