@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="da">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KinoxP — Book billet</title>
+
+    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css">
+</head>
+<style>
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(6px) brightness(var(--glass-dim));
+        -webkit-backdrop-filter: blur(6px) brightness(var(--glass-dim));
+        color: var(--text);
+        font-size: 1rem;
+        font-family: "Montserrat", sans-serif;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,.3);
+        transition: all 0.2s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: rgba(255,255,255,0.6);
+        font-style: italic;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px rgba(177,33,42,.5), inset 0 2px 6px rgba(0,0,0,.4);
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* ========= Responsive småjusteringer ========= */
+    @media (max-width: 768px){
+        :root{ --topbar-h: 84px }
+        .logo{ height:56px }
+        .topbar-middle{ display:none }
+    }
+
+    #customerStatus {
+        display: block;
+        margin-bottom: 6px; /* push the input down */
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    .status-text {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .form-group--stack{
+        flex-direction: column;         /* stak vertikalt */
+        align-items: stretch;           /* fuld bredde */
+    }
+
+    .form-group--stack label{
+        width: auto;                    /* ikke fast 80px her */
+        margin: 0 0 6px 0;              /* lidt luft under label */
+    }
+
+    .form-group--stack #customerStatus{
+        margin: 0 0 6px 0;              /* luft før input */
+    }
+
+    .form-group--stack input{
+        flex: initial;                  /* drop flex:1 fra den horisontale variant */
+        width: 100%;
+    }
+
+
+</style>
+<body>
+<div class="bg" id="bg"></div>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <div class="logo-wrap"><img class="logo" src="../static/KinoXP_Logo.png" alt="KinoxP"><img></div>
+        <div class="topbar-middle">Book din plads</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn-ghost" id="help">Hjælp</button>
+        <button class="btn-outline btn" id="restart">Start forfra</button>
+    </div>
+</header>
+
+<main class="app-main">
+    <h1>Book billet — overskueligt flow</h1>
+
+    <div class="layout">
+        <!-- LEFT: film + showtimes + seatmap -->
+        <div>
+            <div class="panel">
+                <div class="panel-header"><h2>1) Film</h2><div class="panel-actions"><span id="filmsLoader"></span></div></div>
+                <div id="filmContainer" class="film-grid"></div>
+            </div>
+
+            <div class="panel" style="margin-top:12px;" id="panelShowtimes" hidden>
+                <div class="panel-header"><h2>2) Tidspunkter</h2><div class="panel-actions"><span id="timesLoader"></span></div></div>
+                <div id="showtimeInfo" class="muted-small">Vælg en film for at se tidspunkter</div>
+                <div id="timesWrap" class="showtimes"></div>
+            </div>
+
+            <div class="panel" style="margin-top:12px;" id="panelSeats" hidden>
+                <div class="panel-header"><h2>3) Sæder</h2><div class="panel-actions"><span id="seatsLoader"></span></div></div>
+                <div id="screenNote" class="muted-small">Lærred</div>
+                <div id="seatMap" class="seatmap" aria-live="polite"></div>
+                <div class="legend">
+                    <div class="muted-small"><span class="sw" style="background:linear-gradient(180deg,var(--red),var(--red-600));"></span> Valgt</div>
+                    <div class="muted-small"><span class="sw" style="background:rgba(255,255,255,.03)"></span> Ledigt</div>
+                    <div class="muted-small"><span class="sw" style="background:rgba(255,255,255,.06)"></span> Optaget</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: booking summary + form -->
+        <aside>
+            <div class="panel summary">
+                <div class="panel-header"><h2>Din booking</h2><div class="greeting" id="summaryCount">0 valgt</div></div>
+
+                <div><div class="muted-small">Film</div><div id="selFilm" style="font-weight:800">—</div></div>
+                <div style="margin-top:6px"><div class="muted-small">Tidspunkt</div><div id="selTime" style="font-weight:800">—</div></div>
+                <div style="margin-top:6px"><div class="muted-small">Sæder</div><div id="selSeats" class="selected-list">—</div></div>
+                <div style="margin-top:10px"><div class="muted-small">Pris</div><div id="priceInfo" style="font-weight:800">—</div></div>
+
+                <hr style="opacity:.08" />
+
+
+                <form id="reservationForm">
+
+                    <div class="form-group form-group--stack">
+                        <label for="phone">Telefon</label>
+                        <small id="customerStatus" class="status-text" aria-live="polite"></small>
+                        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+45 12 34 56 78">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Navn</label>
+                        <input id="name" name="name" type="text" required placeholder="Fuldt navn">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input id="email" name="email" type="email" required placeholder="navn@eksempel.dk">
+                    </div>
+
+                    <div class="form-actions" style="display:flex;gap:8px;align-items:center">
+                        <button class="btn btn-primary" id="confirmBtn" type="submit" disabled>Bekræft booking</button>
+                        <button class="btn btn-outline" id="clearCustomerBtn" type="button" style="display:none">Skift til ny kunde</button>
+                        <div id="formStatus" class="muted-small" aria-live="polite"></div>
+                    </div>
+                </form>
+
+                <div class="muted-small" style="margin-top:8px">
+                    Bemærk: NikoDe/Dem.
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<template id="filmTpl">
+    <div class="film-card" role="button" tabindex="0">
+        <img class="film-poster" alt="">
+        <div class="film-title"></div>
+    </div>
+</template>
+
+<script src="../js/choosemovie.js"> </script>
+</body>
+</html>

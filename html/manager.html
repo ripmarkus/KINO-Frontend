@@ -1,38 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KinoXP | Manager Dashboard</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
-    <link rel="stylesheet" href="../stylesheet/managerStyleSheet.css" />
-</head>
-<body>
+    <link rel="stylesheet" href="../stylesheet/screening-modal.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css" />
+    <script src="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.umd.js"></script>
 
+    <style>
+        /* 🎨 Custom Gantt bar colors per theatre */
+        .bar-1 { fill: #007bff; }  /* Theatre 1 - blue */
+        .bar-2 { fill: #ff9800; }  /* Theatre 2 - orange */
+        .bar-3 { fill: #4caf50; }  /* Theatre 3 - green */
+    </style>
+</head>
+
+<body>
 <div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
 
+<!-- ================= HEADER ================= -->
 <header class="topbar">
     <div class="topbar-left">
         <a href="employee-dashboard.html" class="logo-wrap" aria-label="KinoXP forside">
-            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
+            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
         </a>
         <h1 class="topbar-title">Manager Dashboard</h1>
     </div>
     <div class="topbar-right">
         <a href="index.html">
-        <button class="btn-ghost" id="logoutBtn">Logout</button></a>
+            <button class="btn-ghost" id="logoutBtn">Logout</button>
+        </a>
     </div>
 </header>
 
+<!-- ================= MAIN ================= -->
 <main class="app-main manager-main" role="main">
 
+    <!-- ===== THEATRE SCREENINGS PANEL ===== -->
     <section class="panel" aria-labelledby="hall-h2">
         <header class="panel-header">
-            <h2 id="hall-h2">Select a theater and view schedule</h2>
+            <h2 id="hall-h2">Select a theater and view upcoming screenings</h2>
             <div class="panel-actions">
                 <button class="btn btn-toggle" data-hall="hall1" aria-pressed="true">Theater 1</button>
                 <button class="btn btn-toggle" data-hall="hall2" aria-pressed="false">Theater 2</button>
+                <button class="btn btn-primary" id="addScreeningBtn">Add Screening</button>
             </div>
         </header>
 
@@ -40,23 +55,24 @@
             <table id="scheduleTable" class="table table--grid">
                 <thead>
                 <tr>
-                    <th>Start</th>
-                    <th>End</th>
+                    <th>Date</th>
+                    <th>Time</th>
                     <th>Movie</th>
+                    <th>Tickets Sold</th>
                     <th class="col-actions">Action</th>
-                    <th>Ticket Sales</th>
                 </tr>
                 </thead>
-                <tbody><!-- JS --></tbody>
+                <tbody><!-- JS loads screenings here --></tbody>
             </table>
         </div>
     </section>
 
+    <!-- ===== MOVIES PANEL ===== -->
     <section class="panel" aria-labelledby="movie-h2">
         <header class="panel-header">
             <h2 id="movie-h2">Available Movies</h2>
             <div class="panel-actions">
-                <button class="btn btn-primary">Add a movie</button>
+                <button class="btn btn-primary" id="addMovieBtn">Add a Movie</button>
             </div>
         </header>
 
@@ -72,40 +88,69 @@
                     <th class="col-actions">Action</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>Avatar</td><td>11+</td><td>162 min</td><td>Sci-Fi</td><td>An epic journey to Pandora.</td>
-                    <td class="col-actions">
-                        <button class="btn btn-primary">Add to theater</button>
-                        <button class="btn btn-outline">Delete from list</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>The Dark Knight</td><td>15+</td><td>152 min</td><td>Action</td><td>Batman faces the Joker.</td>
-                    <td class="col-actions">
-                        <button class="btn btn-primary">Add to theater</button>
-                        <button class="btn btn-outline">Delete from list</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Inception</td><td>15+</td><td>162 min</td><td>Action</td><td>A thief steals dreams.</td>
-                    <td class="col-actions">
-                        <button class="btn btn-primary">Add to theater</button>
-                        <button class="btn btn-outline">Delete from list</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Titanic</td><td>7+</td><td>210 min</td><td>Romance</td><td>Jack and Rose’s epic love story.</td>
-                    <td class="col-actions">
-                        <button class="btn btn-primary">Add to theater</button>
-                        <button class="btn btn-outline">Delete from list</button>
-                    </td>
-                </tr>
-                </tbody>
+                <tbody id="movieList"><!-- JS loads movies here --></tbody>
             </table>
         </div>
     </section>
+
 </main>
+
+<!-- ================= ADD SCREENING MODAL ================= -->
+<div id="addScreeningModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+        <h2 style="color:black">Add New Screening</h2>
+
+        <form id="addScreeningForm">
+            <label style="color:black" for="movieSelect">Movie:</label>
+            <select id="movieSelect" required></select>
+
+            <label style="color:black" for="theatreSelect">Theatre:</label>
+            <select id="theatreSelect" required></select>
+
+            <label style="color:black" for="dateInput">Date:</label>
+            <input type="text" id="dateInput" placeholder="dd/mm/yyyy" required pattern="\d{2}/\d{2}/\d{4}" />
+
+            <label style="color:black" for="timeInput">Time:</label>
+            <input type="time" id="timeInput" required />
+
+            <label style="color:black" for="operatorSelect">Operator:</label>
+            <select id="operatorSelect" required></select>
+
+            <button class="btn btn-primary" type="submit" style="margin-top:40px;">Add Screening</button>
+        </form>
+    </div>
+</div>
+
+<!-- ================= ADD MOVIE MODAL ================= -->
+<div id="addMovieModal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close-btn" id="closeMovieModalBtn">&times;</span>
+        <h2 style="color:black">Add New Movie</h2>
+
+        <form id="addScreeningMovieForm">
+            <label style="color:black" for="movieTitle">Title:</label>
+            <input type="text" id="movieTitle" name="movieTitle" required />
+
+            <label style="color:black" for="ageLimit">Age Limit:</label>
+            <input type="number" id="ageLimit" name="ageLimit" required />
+
+            <label style="color:black" for="duration">Duration (min):</label>
+            <input type="number" id="duration" name="duration" required />
+
+            <label style="color:black" for="genreSearch">Genre:</label>
+            <div class="genre-search-wrapper">
+                <input type="text" id="genreSearch" placeholder="Search or add new genre..." autocomplete="on" />
+                <ul id="genreList" class="genre-dropdown hidden"></ul>
+            </div>
+
+            <label style="color:black" for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <button class="btn btn-primary" type="submit" style="margin-top:30px;">Add Movie</button>
+        </form>
+    </div>
+</div>
 
 <script src="../js/manager.js"></script>
 </body>
