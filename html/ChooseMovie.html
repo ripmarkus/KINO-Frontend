@@ -49,14 +49,57 @@
         .logo{ height:56px }
         .topbar-middle{ display:none }
     }
+
+    #customerStatus {
+        display: block;
+        margin-bottom: 6px; /* push the input down */
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    .status-text {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .form-group--stack{
+        flex-direction: column;         /* stak vertikalt */
+        align-items: stretch;           /* fuld bredde */
+    }
+
+    .form-group--stack label{
+        width: auto;                    /* ikke fast 80px her */
+        margin: 0 0 6px 0;              /* lidt luft under label */
+    }
+
+    .form-group--stack #customerStatus{
+        margin: 0 0 6px 0;              /* luft før input */
+    }
+
+    .form-group--stack input{
+        flex: initial;                  /* drop flex:1 fra den horisontale variant */
+        width: 100%;
+    }
+
+
 </style>
 <body>
 <div class="bg" id="bg"></div>
 
 <header class="topbar">
     <div class="topbar-left">
-        <div class="logo-wrap"><img class="logo" src="logo-placeholder.png" alt="KinoxP"><img
-                src="" height="1024" width="1024"/></div>
+        <div class="logo-wrap"><img class="logo" src="../static/KinoXP_Logo.png" alt="KinoxP"><img></div>
         <div class="topbar-middle">Book din plads</div>
     </div>
     <div style="display:flex;gap:8px;align-items:center">
@@ -107,7 +150,14 @@
                 <hr style="opacity:.08" />
 
 
-                <form>
+                <form id="reservationForm">
+
+                    <div class="form-group form-group--stack">
+                        <label for="phone">Telefon</label>
+                        <small id="customerStatus" class="status-text" aria-live="polite"></small>
+                        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="+45 12 34 56 78">
+                    </div>
+
                     <div class="form-group">
                         <label for="name">Navn</label>
                         <input id="name" name="name" type="text" required placeholder="Fuldt navn">
@@ -118,16 +168,12 @@
                         <input id="email" name="email" type="email" required placeholder="navn@eksempel.dk">
                     </div>
 
-                    <div class="form-group">
-                        <label for="phone">Telefon</label>
-                        <input id="phone" name="phone" type="tel" required placeholder="+45 12 34 56 78">
-                    </div>
-
-                    <div class="form-actions">
+                    <div class="form-actions" style="display:flex;gap:8px;align-items:center">
                         <button class="btn btn-primary" id="confirmBtn" type="submit" disabled>Bekræft booking</button>
+                        <button class="btn btn-outline" id="clearCustomerBtn" type="button" style="display:none">Skift til ny kunde</button>
                         <div id="formStatus" class="muted-small" aria-live="polite"></div>
                     </div>
-
+                </form>
 
                 <div class="muted-small" style="margin-top:8px">
                     Bemærk: NikoDe/Dem.

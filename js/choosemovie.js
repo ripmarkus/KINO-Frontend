@@ -20,7 +20,7 @@ const priceInfo = document.getElementById('priceInfo');
 const confirmBtn = document.getElementById('confirmBtn');
 const formStatus = document.getElementById('formStatus');
 
-const bookingForm = document.getElementById('bookingForm');
+const reservationForm = document.getElementById('reservationForm');
 
 let screenings = [];         // raw screenings from /api/scheduling/week
 let uniqueMovies = [];       // dedup movies
@@ -32,10 +32,29 @@ let screeningDetail = null;  // result from GET /api/screenings/{id}
 let selectedSeatIds = new Set();
 let seatPricePer = null;
 
+// Refs til reservation
+const nameEl = document.getElementById('name');
+const emailEl = document.getElementById('email');
+const phoneEl = document.getElementById('phone');
+const customerStatus = document.getElementById('customerStatus');
+const clearCustomerBtn = document.getElementById('clearCustomerBtn');
+const API_BASE = "http://localhost:8080";
+const api = (path) => `${API_BASE}${path}`;
+
+let existingCustomer = null;
+
 document.addEventListener('DOMContentLoaded', init);
 document.getElementById('help').addEventListener('click', ()=> alert('Vælg film → tidspunkt → sæder → kontaktinfo → bekræft.'));
 document.getElementById('restart').addEventListener('click', resetAll);
-bookingForm.addEventListener('submit', handleSubmit);
+reservationForm.addEventListener('submit', handleSubmit);
+
+phoneEl.addEventListener('blur', () => lookupCustomerByPhone(phoneEl.value));
+
+clearCustomerBtn?.addEventListener('click', () => {
+    setNewCustomerUI();
+    nameEl.value = '';
+    emailEl.value = '';
+});
 
 async function init(){
     filmsLoader.innerHTML = '<span class="loader"></span> Henter uges screenings...';
@@ -141,6 +160,70 @@ function formatDate(iso){
     if (isNaN(d)) return iso || 'Ukendt tid';
     return d.toLocaleString('da-DK', { weekday:'short', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
 }
+
+//Normalisere telefonnumre
+function normalizePhone(p){ return (p || '').replace(/[ -]/g, ''); }
+
+function setExistingCustomerUI(customer){
+    existingCustomer = customer;
+    nameEl.value = customer.name || '';
+    emailEl.value = customer.email || '';
+    phoneEl.value = customer.phone || phoneEl.value;
+
+    nameEl.readOnly = true;
+    emailEl.readOnly = true;
+
+    customerStatus.textContent = `Eksisterende kunde fundet (ID: ${customer.id})`;
+    customerStatus.style.color = 'var(--beige)';
+    clearCustomerBtn.style.display = 'inline-block';
+}
+
+function setNewCustomerUI(){
+    existingCustomer = null;
+    nameEl.readOnly = false;
+    emailEl.readOnly = false;
+
+    customerStatus.textContent = 'Ny kunde – udfyld navn og e-mail';
+    customerStatus.style.color = 'rgba(255,255,255,.85)';
+    clearCustomerBtn.style.display = 'none';
+}
+
+async function lookupCustomerByPhone(phone){
+    const q = normalizePhone(phone);
+    if (!q){ customerStatus.textContent = ''; return; }
+
+    try {
+        const res = await fetch(api(`/api/customers/lookup?phone=${encodeURIComponent(q)}`));
+        console.debug('[lookup] status', res.status);
+
+        if (!res.ok) {
+            if (res.status === 404) { setNewCustomerUI(); return; }
+            throw new Error(`Lookup failed: ${res.status}`);
+        }
+
+        const raw = await res.json();
+        console.debug('[lookup] body', raw);
+
+        // tolerant mapping of possible field names
+        const id    = raw.id ?? raw.customerId ?? raw.customerID ?? raw.customer_id ?? null;
+        const name  = raw.name ?? raw.fullName ?? raw.customerName ?? [raw.firstName, raw.lastName].filter(Boolean).join(' ');
+        const email = raw.email ?? raw.mail ?? raw.emailAddress ?? '';
+        const phoneNorm = raw.phone ?? raw.phoneNumber ?? raw.mobile ?? q;
+
+        if (id) {
+            setExistingCustomerUI({ id, name, email, phone: phoneNorm });
+        } else {
+            console.warn('[lookup] 200 OK but no id in response — treating as new');
+            setNewCustomerUI();
+        }
+    } catch (err) {
+        console.error(err);
+        customerStatus.textContent = 'Kunne ikke slå kunden op';
+        customerStatus.style.color = 'tomato';
+    }
+}
+
+
 
 // Showtime selected: fetch details + seats
 async function onShowtimeSelect(s){
@@ -338,7 +421,7 @@ function updateSelectionUI(){
 }
 
 // Build reservation payload — adjust here if backend expects other fieldnames
-function buildReservationPayload(name, email, phone){
+/*function buildReservationPayload(name, email, phone){
     // Default assumed body structure (tolerant):
     return {
         // Commonly expected: screeningId OR showId OR screening.id
@@ -350,7 +433,28 @@ function buildReservationPayload(name, email, phone){
         email: email,
         phone: phone
     };
+}*/
+
+function buildReservationPayload(name, email, phone){
+    const base = {
+        screeningId: selectedScreening.id || selectedScreening.screeningId || selectedScreening.showId,
+        seatIds: Array.from(selectedSeatIds).map(n => Number(n)) // DTO kræver Set<Integer>
+    };
+
+    if (existingCustomer && existingCustomer.id){
+        return { ...base, customerId: existingCustomer.id };
+    } else {
+        return {
+            ...base,
+            customer: {
+                name: name,
+                email: email,
+                phone: normalizePhone(phone)
+            }
+        };
+    }
 }
+
 
 // Submit booking
 async function handleSubmit(e){
@@ -362,7 +466,10 @@ async function handleSubmit(e){
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    if (!name || !email || !phone) { alert('Udfyld navn, e-mail og telefon'); return; }
+    if (!phone) { alert('Udfyld telefon'); return; }
+    if (!(existingCustomer && existingCustomer.id)) {
+        if (!name || !email) { alert('Udfyld navn og e-mail for ny kunde'); return; }
+    }
 
     confirmBtn.disabled = true;
     formStatus.innerHTML = '<span class="loader"></span> Forsøger at booke...';
@@ -370,11 +477,11 @@ async function handleSubmit(e){
     const payload = buildReservationPayload(name, email, phone);
 
     try {
-        const res = await fetch('/api/reservations', {
+        const res = await fetch(api('/api/reservations', {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify(payload)
-        });
+        }));
         if (res.status === 201 || res.ok) {
             // success
             const data = await res.json().catch(()=>null);
