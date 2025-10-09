@@ -8,6 +8,12 @@
         <link rel="stylesheet" href="../stylesheet/showtime.css"/>
     <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
 
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kræv at brugeren har mindst én af disse roller for at se siden
+        requireAnyRole("OPERATOR", "MANAGER");
+    </script>
 </head>
 <body>
 
@@ -17,13 +23,14 @@
 <!-- Header / topbar -->
 <header class="topbar">
     <div class="topbar-left">
-        <a href="index.html" class="logo-wrap" aria-label="KinoXP forside">
+        <a href="#" class="logo-wrap"  onclick="goHomeByRole(); return false;">
             <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
         </a>
         <h1 class="topbar-title">Operator Dashboard</h1>
     </div>
     <div class="topbar-right">
-        <a href="index.html"><button class="btn-ghost" id="logoutBtn">Logout</button></a>
+        <a href="index.html">
+            <button class="btn-ghost" id="logoutBtn">Logout</button></a>
     </div>
 </header>
 
