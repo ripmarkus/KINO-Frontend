@@ -199,6 +199,41 @@ body{
   .topbar-middle{ display:none }
 }
 
+/* Cancel screening link styling */
+.cancel-screening-link {
+    color: #B1212A;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+.cancel-screening-link:hover {
+    color: #9E1C23;
+}
+
+.cancel-movie-link {
+    color: #B1212A;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+    font-size: 0.9em;
+}
+
+.cancel-movie-link:hover {
+    color: #9E1C23;
+}
+
+/* Ticket count styling */
+.ticket-count {
+    text-align: center;
+}
+
+/* Table message styling */
+.table-message {
+    text-align: center;
+}
+
 #scheduleTable th,
 #scheduleTable td {
     width: 20%;            /* 5 kolonner → 100/5 = 20% hver */
