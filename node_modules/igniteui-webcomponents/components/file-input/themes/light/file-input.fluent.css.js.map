@@ -1,0 +1,1 @@
+{"version":3,"file":"file-input.fluent.css.js","sourceRoot":"","sources":["../../../../../src/components/file-input/themes/light/file-input.fluent.css.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,GAAG,EAAE,MAAM,KAAK,CAAC;AAE1B,MAAM,CAAC,MAAM,MAAM,GAAG,GAAG,CAAA,2BAA2B,CAAC","sourcesContent":["import { css } from 'lit';\n\nexport const styles = css`:host{--ig-theme: fluent}`;\n"]}

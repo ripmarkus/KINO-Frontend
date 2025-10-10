@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background: var(--ig-chip-background, var(--ig-gray-300));--selected-background: var(--ig-chip-selected-background, var(--ig-gray-300));--text-color: var(--ig-chip-text-color, var(--ig-gray-300-contrast));--focus-background: var(--ig-chip-focus-background, var(--ig-gray-500));--focus-selected-text-color: var(--ig-chip-focus-selected-text-color, var(--ig-gray-500-contrast));--focus-selected-background: var(--ig-chip-focus-selected-background, var(--ig-gray-500));--ig-theme: material}`;
+//# sourceMappingURL=chip.material.css.js.map

@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>KinoXP | Operator</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+        <link rel="stylesheet" href="/stylesheet/showtime.css"/>
+    <link rel="stylesheet" href="/stylesheet/kinoxp-base.css" />
 
-    <script src="../js/auth.js"></script>
+
+    <script src="/js/auth.js"></script>
     <script>
         // Kræv at brugeren har mindst én af disse roller for at se siden
         requireAnyRole("OPERATOR", "MANAGER");
@@ -16,13 +18,13 @@
 <body>
 
 <!-- Baggrund -->
-<div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
+<div class="bg" style="background-image:url('/static/Background til KinoXP.png')"></div>
 
 <!-- Header / topbar -->
 <header class="topbar">
     <div class="topbar-left">
         <a href="#" class="logo-wrap"  onclick="goHomeByRole(); return false;">
-            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
+            <img src="/static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo"/>
         </a>
         <h1 class="topbar-title">Operator Dashboard</h1>
     </div>
@@ -52,13 +54,11 @@
     <section class="panel">
         <header class="panel-header">
             <h2>Filmskema</h2>
-        </header>
-        <div class="timeline-container">
+                    </header>
             <div id="timeline" class="timeline">
                 <div class="loading">Indlæser filmschema...</div>
-            </div>
-        </div>
-    </section>
+                </div>
+            </section>
 
     <!-- Panel: Stats -->
     <section class="panel">
@@ -82,149 +82,11 @@
     </section>
 
 </main>
+<!-- lige før </body> -->
+<script defer src="/js/timelime.js"></script>              <!-- (din kino.api.js) -->
+<script defer src="/js/showtimes-renderer.js"></script>    <!-- NY -->
+<script defer src="/js/timeline-controller.js"></script>   <!-- uændret bortset fra 1 linje -->
 
-<script>
-    const API_BASE = 'http://localhost:8080/api';
-
-    class SmartTimelineUI {
-        constructor() {
-            this.visibleHours = [];
-            this.loadWeek();
-        }
-
-        calculateVisibleHours(screenings) {
-            if (!screenings || screenings.length === 0) return this.range(8, 24);
-
-            let earliestHour = 24;
-            let latestHour = 0;
-            let hasNightScreenings = false;
-
-            screenings.forEach(screening => {
-                const startTime = new Date(screening.startTime);
-                const endTime = new Date(screening.endTime);
-
-                const startHour = startTime.getHours();
-                const endHour = endTime.getHours();
-
-                earliestHour = Math.min(earliestHour, startHour);
-                latestHour = Math.max(latestHour, endHour + (endTime.getMinutes() > 0 ? 1 : 0));
-
-                if (startHour <= 6 || endHour <= 6) hasNightScreenings = true;
-            });
-
-            if (hasNightScreenings) return this.range(0, 24);
-
-            return this.range(Math.max(7, earliestHour-1), Math.min(24, latestHour+1));
-        }
-
-        range(start, end) {
-            const hours = [];
-            for (let i=start; i<end; i++) hours.push(i);
-            return hours;
-        }
-
-        async loadToday() { await this.fetchAndDisplay(`${API_BASE}/gantt/today`, 'Dagens program'); }
-        async loadWeek() { await this.fetchAndDisplay(`${API_BASE}/gantt/week`, 'Ugens program'); }
-
-        async fetchAndDisplay(url, description) {
-            try {
-                const response = await fetch(url);
-                const screenings = await response.json();
-                this.visibleHours = this.calculateVisibleHours(screenings);
-
-                const timeRangeText = `${this.visibleHours[0].toString().padStart(2,'0')}:00 - ${(this.visibleHours[this.visibleHours.length-1]+1).toString().padStart(2,'0')}:00`;
-
-                document.getElementById('timelineInfo').textContent = `Viser: ${timeRangeText} (${this.visibleHours.length} timer synlige)`;
-                document.getElementById('timelineInfo').style.display = 'block';
-
-                this.displayTimeline(screenings);
-                this.updateStats(screenings);
-
-            } catch (error) {
-                console.error(error);
-                document.getElementById('timeline').innerHTML = `<div class="loading">Fejl: ${error.message}</div>`;
-            }
-        }
-
-        displayTimeline(screenings) {
-            if (!screenings || screenings.length === 0) {
-                document.getElementById('timeline').innerHTML = '<div class="loading">Ingen filmvisninger fundet</div>';
-                return;
-            }
-
-            const theatreGroups = {};
-            screenings.forEach(screening => {
-                const theatreId = screening.theatre?.theatreId || 0;
-                const theatreName = screening.theatre?.name || 'Ukendt sal';
-                if (!theatreGroups[theatreId]) theatreGroups[theatreId] = { name: theatreName, screenings: [] };
-                theatreGroups[theatreId].screenings.push(screening);
-            });
-
-            let html = this.createTimeHeader();
-            Object.values(theatreGroups).forEach(theatre => html += this.createTheatreRow(theatre));
-            document.getElementById('timeline').innerHTML = html;
-        }
-
-        createTimeHeader() {
-            let html = '<div class="time-header"><div class="theatre-label-header">Biografsale</div><div class="timeline-grid">';
-            this.visibleHours.forEach(hour => html += `<div class="hour-header">${hour.toString().padStart(2,'0')}:00</div>`);
-            html += '</div></div>';
-            return html;
-        }
-
-        createTheatreRow(theatre) {
-            let html = `<div class="theatre-row"><div class="theatre-label">${theatre.name}</div><div class="timeline-area">`;
-            theatre.screenings.forEach(screening => html += this.createScreeningBar(screening));
-            html += `</div></div>`;
-            return html;
-        }
-
-        createScreeningBar(screening) {
-            const startTime = new Date(screening.startTime);
-            const endTime = new Date(screening.endTime);
-            const startPercent = this.timeToPercent(startTime);
-            const endPercent = this.timeToPercent(endTime);
-            const widthPercent = endPercent - startPercent;
-            if (startPercent < 0 || endPercent > 100 || widthPercent <= 0) return '';
-
-            const statusClass = screening.status?.toLowerCase() || 'scheduled';
-            const movieTitle = screening.movie?.title || 'Ukendt film';
-            const timeText = `${this.formatTime(startTime)} - ${this.formatTime(endTime)}`;
-
-            return `<div class="screening-bar ${statusClass}" style="left: ${startPercent}%; width: ${widthPercent}%" onclick="showScreeningDetails('${movieTitle}','${timeText}')" title="${movieTitle} - ${timeText}">${movieTitle}</div>`;
-        }
-
-        timeToPercent(date) {
-            const totalMinutes = date.getHours()*60 + date.getMinutes();
-            const firstVisibleHour = this.visibleHours[0];
-            const lastVisibleHour = this.visibleHours[this.visibleHours.length-1]+1;
-            const visibleTotalMinutes = (lastVisibleHour-firstVisibleHour)*60;
-            const relativeMinutes = totalMinutes - firstVisibleHour*60;
-            return Math.max(0, Math.min(100, (relativeMinutes/visibleTotalMinutes)*100));
-        }
-
-        formatTime(date) {
-            return date.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'});
-        }
-
-        updateStats(screenings) {
-            const uniqueTheatres = new Set();
-            const uniqueMovies = new Set();
-            screenings.forEach(s => { if(s.theatre?.theatreId) uniqueTheatres.add(s.theatre.theatreId); if(s.movie?.movieId) uniqueMovies.add(s.movie.movieId); });
-            document.getElementById('totalScreenings').textContent = screenings.length;
-            document.getElementById('activeTheatres').textContent = uniqueTheatres.size;
-            document.getElementById('totalMovies').textContent = uniqueMovies.size;
-            document.getElementById('stats').style.display = 'flex';
-        }
-    }
-
-    let smartUI;
-    function loadToday() { smartUI.loadToday(); }
-    function loadWeek() { smartUI.loadWeek(); }
-    function showScreeningDetails(title,timeText) { alert(`🎬 ${title}\n\n⏰ ${timeText}`); }
-
-    document.addEventListener('DOMContentLoaded', () => { smartUI = new SmartTimelineUI(); });
-</script>
 
 </body>
 </html>

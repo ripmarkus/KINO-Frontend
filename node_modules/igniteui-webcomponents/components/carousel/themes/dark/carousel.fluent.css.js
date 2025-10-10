@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--button-disabled-background: var(--ig-carousel-button-disabled-background, var(--ig-gray-50));--button-disabled-arrow-color: var(--ig-carousel-button-disabled-arrow-color, var(--ig-gray-200));--indicator-focus-color: var(--ig-carousel-indicator-focus-color, var(--ig-primary-200));--button-focus-border-color: var(--ig-carousel-button-focus-border-color, var(--ig-gray-400));--border-radius: var(--ig-carousel-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.0555555556) * 2.25rem), 2.25rem));--button-focus-arrow-color: var(--ig-carousel-button-focus-arrow-color, var(--ig-primary-200));--ig-theme: fluent;--navigation-border-radius: var(--border-radius)}`;
+//# sourceMappingURL=carousel.fluent.css.js.map

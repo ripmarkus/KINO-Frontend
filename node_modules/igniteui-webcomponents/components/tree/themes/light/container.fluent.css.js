@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--background-selected: var(--ig-tree-background-selected, var(--ig-gray-200));--foreground-selected: var(--ig-tree-foreground-selected, var(--ig-gray-200-contrast));--background-active-selected: var(--ig-tree-background-active-selected, var(--ig-gray-300));--foreground-active-selected: var(--ig-tree-foreground-active-selected, var(--ig-gray-300-contrast));--border-color: var(--ig-tree-border-color, var(--ig-gray-800));--ig-theme: fluent}`;
+//# sourceMappingURL=container.fluent.css.js.map

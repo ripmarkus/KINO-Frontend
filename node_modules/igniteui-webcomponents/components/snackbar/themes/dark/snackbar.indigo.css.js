@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--elevation: var(--ig-snackbar-elevation, var(--ig-elevation-11));--background: var(--ig-snackbar-background, var(--ig-gray-300));--text-color: var(--ig-snackbar-text-color, var(--ig-gray-200-contrast));--button-color: var(--ig-snackbar-button-color, var(--ig-gray-200-contrast));--border-radius: var(--ig-snackbar-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.25) * 1.5rem), 1.5rem));--ig-theme: indigo}`;
+//# sourceMappingURL=snackbar.indigo.css.js.map

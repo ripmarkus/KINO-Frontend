@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--button-elevation: var(--ig-carousel-button-elevation, var(--ig-elevation-0));--indicator-focus-color: var(--ig-carousel-indicator-focus-color, var(--ig-primary-600));--button-focus-border-color: var(--ig-carousel-button-focus-border-color, hsl(from var(--ig-primary-600) h s l/0.5));--border-radius: var(--ig-carousel-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.1111111111) * 2.25rem), 2.25rem));--button-focus-arrow-color: var(--ig-carousel-button-focus-arrow-color, var(--ig-gray-700));--ig-theme: bootstrap;--navigation-border-radius: var(--border-radius)}`;
+//# sourceMappingURL=carousel.bootstrap.css.js.map

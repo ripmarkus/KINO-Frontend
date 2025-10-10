@@ -1,0 +1,51 @@
+import { css } from 'lit';
+import { styles as bootstrapDark } from './dark/tab.bootstrap.css.js';
+import { styles as fluentDark } from './dark/tab.fluent.css.js';
+import { styles as indigoDark } from './dark/tab.indigo.css.js';
+import { styles as materialDark } from './dark/tab.material.css.js';
+import { styles as sharedDark } from './dark/tab.shared.css.js';
+import { styles as bootstrapLight } from './light/tab.bootstrap.css.js';
+import { styles as fluentLight } from './light/tab.fluent.css.js';
+import { styles as indigoLight } from './light/tab.indigo.css.js';
+import { styles as materialLight } from './light/tab.material.css.js';
+import { styles as sharedLight } from './light/tab.shared.css.js';
+import { styles as bootstrap } from './shared/tabs/tabs.bootstrap.css.js';
+import { styles as fluent } from './shared/tabs/tabs.fluent.css.js';
+import { styles as indigo } from './shared/tabs/tabs.indigo.css.js';
+import { styles as material } from './shared/tabs/tabs.material.css.js';
+const light = {
+    shared: css `
+    ${sharedLight}
+  `,
+    bootstrap: css `
+    ${bootstrap} ${bootstrapLight}
+  `,
+    material: css `
+    ${material} ${materialLight}
+  `,
+    fluent: css `
+    ${fluent} ${fluentLight}
+  `,
+    indigo: css `
+    ${indigo} ${indigoLight}
+  `,
+};
+const dark = {
+    shared: css `
+    ${sharedDark}
+  `,
+    bootstrap: css `
+    ${bootstrap} ${bootstrapDark}
+  `,
+    material: css `
+    ${material} ${materialDark}
+  `,
+    fluent: css `
+    ${fluent} ${fluentDark}
+  `,
+    indigo: css `
+    ${indigo} ${indigoDark}
+  `,
+};
+export const all = { light, dark };
+//# sourceMappingURL=tabs-themes.js.map

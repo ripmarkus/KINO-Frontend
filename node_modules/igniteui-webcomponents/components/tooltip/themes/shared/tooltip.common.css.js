@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `[part=base]{background:var(--background);color:var(--text-color);border-radius:var(--border-radius);box-shadow:var(--elevation)}#arrow[part=top],#arrow[part=bottom]{border-left:.25rem solid rgba(0,0,0,0);border-right:.25rem solid rgba(0,0,0,0)}#arrow[part=top]{border-top:.25rem solid var(--background)}#arrow[part=bottom]{border-bottom:.25rem solid var(--background)}#arrow[part=left],#arrow[part=right]{border-top:.25rem solid rgba(0,0,0,0);border-bottom:.25rem solid rgba(0,0,0,0)}#arrow[part=left]{border-left:.25rem solid var(--background)}#arrow[part=right]{border-right:.25rem solid var(--background)}`;
+//# sourceMappingURL=tooltip.common.css.js.map

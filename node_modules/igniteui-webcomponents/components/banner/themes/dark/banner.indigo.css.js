@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--banner-background: var(--ig-banner-banner-background, var(--ig-gray-50));--banner-border-color: var(--ig-banner-banner-border-color, var(--ig-gray-100));--banner-message-color: var(--ig-banner-banner-message-color, var(--ig-gray-700));--banner-illustration-color: var(--ig-banner-banner-illustration-color, var(--ig-gray-600));--border-radius: var(--ig-banner-border-radius, 0.375rem);--ig-theme: indigo}`;
+//# sourceMappingURL=banner.indigo.css.js.map

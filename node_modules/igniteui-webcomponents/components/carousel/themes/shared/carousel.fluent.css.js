@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `igc-button::part(focused),igc-button::part(focused):hover{border:none}igc-button::part(focused)::after,igc-button::part(focused):hover::after{position:absolute;content:"";pointer-events:none;inset-block-start:.1875rem;inset-inline-start:.1875rem;width:calc(100% - 0.1875rem*2);height:calc(100% - 0.1875rem*2);box-shadow:0 0 0 .0625rem var(--button-focus-border-color)}[part="label indicators"],[part="label indicators start"]{border-radius:.125rem}`;
+//# sourceMappingURL=carousel.fluent.css.js.map

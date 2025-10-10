@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--banner-background: var(--ig-banner-banner-background, var(--ig-surface-500));--border-radius: var(--ig-banner-border-radius, 0);--banner-border-color: var(--ig-banner-banner-border-color, var(--ig-gray-300));--banner-message-color: var(--ig-banner-banner-message-color, var(--ig-gray-800));--banner-illustration-color: var(--ig-banner-banner-illustration-color, var(--ig-gray-800));--ig-theme: bootstrap}`;
+//# sourceMappingURL=banner.bootstrap.css.js.map

@@ -1,0 +1,3 @@
+import { css } from 'lit';
+export const styles = css `:host{--elevation: var(--ig-tooltip-elevation, var(--ig-elevation-0));--background: var(--ig-tooltip-background, hsl(from var(--ig-gray-700) h s l/0.9));--text-color: var(--ig-tooltip-text-color, var(--ig-gray-700-contrast));--border-radius: var(--ig-tooltip-border-radius, clamp(0rem, calc(var(--ig-radius-factor, 0.25) * 1rem), 1rem))}`;
+//# sourceMappingURL=tooltip.shared.css.js.map
