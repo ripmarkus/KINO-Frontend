@@ -131,12 +131,17 @@ async function checkout() {
         return;
     }
 
+    // Build items object: { "itemId": quantity } (string keys!)
+    const itemsForSale = {};
+    items.forEach(([id, item]) => {
+        itemsForSale[id] = item.quantity;  // Keep id as string, not parseInt
+    });
+
     const saleData = {
-        items: Object.fromEntries(items.map(([id, item]) => [
-            { itemId: parseInt(id) },
-            item.quantity
-        ]))
+        items: itemsForSale
     };
+
+    console.log("Sending sale data:", saleData);
 
     try {
         document.getElementById("checkoutBtn").disabled = true;
@@ -147,11 +152,12 @@ async function checkout() {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || "Failed to complete sale");
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to complete sale");
         }
 
-        const total = Object.values(cartState).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const result = await response.json();
+        const total = result.totalPrice;
         showAlert(`Sale completed! Total: ${total.toFixed(2)} DKK`, "success");
 
         Object.keys(cartState).forEach(key => delete cartState[key]);

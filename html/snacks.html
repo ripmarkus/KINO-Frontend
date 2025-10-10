@@ -5,20 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>KinoXP | Sell Snacks</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
     <link rel="stylesheet" href="../stylesheet/snacks.css" />
+    <link rel="stylesheet" href="../stylesheet/kinoxp-base.css" />
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kræv at brugeren har mindst én af disse roller for at se siden
+        requireAnyRole("SALES_CLERK", "MANAGER");
+    </script>
+
 </head>
 <body>
 
 <div class="bg" style="background-image:url('../static/Background til KinoXP.png')"></div>
 
 <header class="topbar">
-    <div class="topbar-left">
-        <a href="EmployeeDashboard.html" class="logo-wrap" onclick="return goHomeByRole();">
-            <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
-        </a>
-        <h1 class="topbar-title">Sell Snacks</h1>
-    </div>
+<div class="topbar-left">
+    <a href="#" class="logo-wrap" onclick="goHomeByRole(); return false;">
+        <img src="../static/KinoXP_Logo.png" alt="KinoXP Logo" class="logo" />
+    </a>
+    <h1 class="topbar-title">Sell snacks</h1>
+</div>
+<div class="topbar-right">
+    <a href="employee.html">
+        <button class="btn-ghost" id="logoutBtn" aria-label="Log ud">Logout</button>
+    </a>
+</div>
 </header>
 
 <main class="app-main" role="main">
