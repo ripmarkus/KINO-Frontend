@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorBox = document.getElementById("formError");
     const submitBtn = form.querySelector(".auth-submit");
 
+    const API_BASE = `${window.location.origin}/api`;
+
     // Vis/skjul adgangskode
     toggleBtn.addEventListener("click", () => {
         const isHidden = password.type === "password";
@@ -38,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            const res = await fetch("http://localhost:8080/api/auth/login", { // Opdateret endpoint
+            const res = await fetch(`${API_BASE}/auth/login`, { // Opdateret endpoint
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"},
