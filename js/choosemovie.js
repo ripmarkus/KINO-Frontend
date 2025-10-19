@@ -38,8 +38,8 @@ const emailEl = document.getElementById('email');
 const phoneEl = document.getElementById('phone');
 const customerStatus = document.getElementById('customerStatus');
 const clearCustomerBtn = document.getElementById('clearCustomerBtn');
-const API_BASE = "http://localhost:8080";
-const api = (path) => `${API_BASE}${path}`;
+
+const API_BASE = `${window.location.origin}/api`;
 
 let existingCustomer = null;
 
@@ -59,7 +59,7 @@ clearCustomerBtn?.addEventListener('click', () => {
 async function init(){
     filmsLoader.innerHTML = '<span class="loader"></span> Henter uges screenings...';
     try {
-        const res = await fetch('http://localhost:8080/api/scheduling/week');
+        const res = await fetch(`${API_BASE}/scheduling/week`);
         if (!res.ok) throw new Error('Kunne ikke hente uge-plan');
         screenings = await res.json();
         buildMovieList(screenings);
@@ -193,7 +193,7 @@ async function lookupCustomerByPhone(phone){
     if (!q){ customerStatus.textContent = ''; return; }
 
     try {
-        const res = await fetch(api(`/api/customers/lookup?phone=${encodeURIComponent(q)}`));
+        const res = await fetch(`${API_BASE}/customers/lookup?phone=${encodeURIComponent(q)}`);
         console.debug('[lookup] status', res.status);
 
         if (!res.ok) {
@@ -265,14 +265,14 @@ async function fetchScreeningDetail(s){
     // Try to derive screening id
     const id = s.id || s.screeningId || s.showId;
     if (!id) throw new Error('Ingen screening-id i objekt');
-    const res = await fetch(`/api/screenings/${encodeURIComponent(id)}`);
+    const res = await fetch(`${API_BASE}/screenings/${encodeURIComponent(id)}`);
     if (!res.ok) throw new Error('No screening detail');
     return await res.json();
 }
 
 async function fetchAvailableSeats(s){
     const id = s.id || s.screeningId || s.showId;
-    const res = await fetch(`http://localhost:8080/api/screenings/${encodeURIComponent(id)}/available-seats`);
+    const res = await fetch(`${API_BASE}/screenings/${encodeURIComponent(id)}/available-seats`);
     if (!res.ok) {
         // fallback: return empty array
         return [];
@@ -477,11 +477,11 @@ async function handleSubmit(e){
     const payload = buildReservationPayload(name, email, phone);
 
     try {
-        const res = await fetch(api('/api/reservations', {
+        const res = await fetch(`${API_BASE}/reservations`, {
             method: 'POST',
             headers: { 'Content-Type':'application/json' },
             body: JSON.stringify(payload)
-        }));
+        });
         if (res.status === 201 || res.ok) {
             // success
             const data = await res.json().catch(()=>null);
