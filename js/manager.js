@@ -3,8 +3,10 @@ let allMovies = [];
 let allGenres = [];
 let currentTheatreId = 1;
 
+const API_BASE = `${window.location.origin}/api`;
+
 const api = (url, options = {}) =>
-    fetch(`http://localhost:8080/api/${url}`, options).then(r =>
+    fetch(`${API_BASE}/${url}`, options).then(r =>
         r.ok ? r.json() : Promise.reject("API error"));
 
 const formatStartTime = (date, time) => {
@@ -64,7 +66,7 @@ function displayScreenings() {
 async function cancelScreening(id) {
     if (!confirm('Cancel this screening?')) return;
 
-    const res = await fetch(`http://localhost:8080/api/screenings/delete/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/screenings/delete/${id}`, { method: 'DELETE' });
     if (res.ok) {
         allScreenings = allScreenings.filter(s => s.showId !== id);
         displayScreenings();
@@ -93,7 +95,7 @@ function setupFormHandler() {
         };
 
         try {
-            const res = await fetch("http://localhost:8080/api/screenings", {
+            const res = await fetch(`${API_BASE}/screenings`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
@@ -126,7 +128,7 @@ async function loadMovies() {
 async function deleteMovie(id) {
     if (!confirm('Delete this movie?')) return;
 
-    const res = await fetch(`http://localhost:8080/api/movies/delete/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/movies/delete/${id}`, { method: 'DELETE' });
     const text = await res.text();
     if (res.ok) {
         allMovies = allMovies.filter(m => m.movieId !== id);
@@ -253,7 +255,7 @@ function setupMovieFormHandler() {
         };
 
         try {
-            const res = await fetch("http://localhost:8080/api/movies", {
+            const res = await fetch(`${API_BASE}/movies`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
